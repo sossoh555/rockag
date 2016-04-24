@@ -1,6 +1,5 @@
-clc
-clear all
-close all
+clc;
+clear all;
 global m0 g0 T A Cd rh0 H0 Re hgr_turn tf md
 % Launch Site: Guiana Space Center
 Alt = 1;              %[m] Alt above sea level
@@ -8,11 +7,11 @@ Alt = 1;              %[m] Alt above sea level
 % VEGA Rocket
 m_stage_gross = [95796, 25751,10948];% 1st, 2nd,3d
 % First stage(Solid Fuel)   
-m_prop = 3005365;      % *GA* {300,000 - 700,000}[kg] Propellant mass
+m_prop = 305365;      % *GA* {50 - 700}[kg] Propellant mass
 Isp    = 300 ;        % *CONSTANT*[s]  Specific impulse
 d      = 3;           % *GA* {2 - 6} [m]  Diameter 
 g0     = 9.81;        % [m/s^2] Constant at its sea-level value
-m0  = 5370000;         % *GA* { [kg] Initial mass
+m0  = 137000;         % *GA* { [kg] Initial mass
 A   = pi*d^2/4;       % [m^2]Frontal area
 Cd  = 0.5 ;           % Drag coefficient,assumed to have the constant value
 rh0 = 1.225;          % [kg/m^3]
@@ -48,9 +47,9 @@ plot(t,h,'b');
 hold on;
 grid on;
 plot(t,h,'.b');
-title('Rocket Dynamics');
-xlabel('time [s]');
-ylabel('Altitude [km]');
+title('Rocket Dynamics,VEGA Rocket sub-orbital ascent profile(1st stage P80)');
+xlabel('time[s]');
+ylabel('Altitude[km]');
 
 
 % VEGA Rocket: First Stage P80
@@ -62,7 +61,7 @@ fprintf('\n Thrust(mean)              = %4.2f [kN]',T/1000)
 fprintf('\n Initial flight path angle = %4.2f [deg]',gamma0*180/pi)
 fprintf('\n Final speed               = %4.2f [km/s]',v(end))
 fprintf('\n Final flight path angle   = %4.2f [deg]',gamma(end))
-fprintf('\n Maximum Altitude          = %4.2f [km]',max(h(:)))
+fprintf('\n Altitude                  = %4.2f [km]',h(end))
 fprintf('\n Downrange distance        = %4.2f [km]',x(end))
 fprintf('\n Drag loss                 = %4.2f [km/s]',vD(end))
 fprintf('\n Gravity loss              = %4.2f [km/s]',vG(end))
