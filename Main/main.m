@@ -1,25 +1,25 @@
 clc
 clear all
 close all
-global m0 g0 T A Cd rh0 H0 Re hgr_turn tf md
+global m0 g0 T A Cd Re hgr_turn tf md %rh0 H0
 % Launch Site: Guiana Space Center
 Alt = 1;              %[m] Alt above sea level
 
 % VEGA Rocket
 m_stage_gross = [95796, 25751,10948];% 1st, 2nd,3d
 % First stage(Solid Fuel)   
-m_prop = 3005365;      % *GA* {300,000 - 700,000}[kg] Propellant mass
-Isp    = 300 ;        % *CONSTANT*[s]  Specific impulse
+m_prop = 507500;      % *GA* {300,000 - 700,000}[kg] Propellant mass
+Isp    = 282 ;        % *CONSTANT*[s]  Specific impulse
 d      = 3;           % *GA* {2 - 6} [m]  Diameter 
 g0     = 9.81;        % [m/s^2] Constant at its sea-level value
-m0  = 5370000;         % *GA* { [kg] Initial mass
+m0  = 541300;         % *GA* { [kg] Initial mass
 A   = pi*d^2/4;       % [m^2]Frontal area
 Cd  = 0.5 ;           % Drag coefficient,assumed to have the constant value
-rh0 = 1.225;          % [kg/m^3]
-H0 = 7500;            % [m] Density scale height
+%rh0 = 1.225;          % [kg/m^3]
+%H0 = 7500;            % [m] Density scale height
 Re = 6378e3;          % [m] Earth's radius
 hgr_turn = 200;       % [m] Rocket starts the gravity turn when h = hgr_turn
-tburn = 200;          % [s] Fuell burn time, first stage
+tburn = 306;          % [s] Fuell burn time, first stage
 md = (m_prop)/tburn;  % [kg/s]Propellant mass flow rate
 T   = md*(Isp*g0);    % [N] Thrust (mean)
 mf = m0 - m_prop;     % [kg] Final mass of the rocket(first stage is empty)
@@ -44,7 +44,7 @@ x     = state(:,3)/1000;      % Downrange distance [km]
 h     = state(:,4)/1000;      % Altitude[km]
 vD    = -state(:,5)/1000;     % Loss due to drag (Velocity)[m/s]
 vG    = -state(:,6)/1000;     % Loss due to gravity (Velocity)[m/s]
-plot(t,h,'b');
+plot(t,h,'.b');
 hold on;
 grid on;
 plot(t,h,'.b');
@@ -66,5 +66,5 @@ fprintf('\n Maximum Altitude          = %4.2f [km]',max(h(:)))
 fprintf('\n Downrange distance        = %4.2f [km]',x(end))
 fprintf('\n Drag loss                 = %4.2f [km/s]',vD(end))
 fprintf('\n Gravity loss              = %4.2f [km/s]',vG(end))
-fprintf('\n Mass Flow             = %4.2f [kg/s]',md)
+fprintf('\n Mass Flow                 = %4.2f [kg/s]',md)
 fprintf('\n');
