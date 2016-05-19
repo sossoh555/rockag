@@ -1,0 +1,16 @@
+clc
+clear all
+close all
+
+N = 15;  %// Input Datasize
+
+vec = randi(1,1,N); %// Random inputs
+cut = ones(1,N);%randi(2,1,N)-1;
+cut(5) = 0;
+
+disp('-------------------- With CUMSUM + ACCUMARRAY')
+tic
+id = cumsum(cut)+1;
+mask = cut==0;
+out = accumarray(id(mask).',vec(mask).',[],@(x) {x});
+toc
