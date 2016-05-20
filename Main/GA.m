@@ -1,15 +1,19 @@
+function main
+
 clear all 
 close all
 clc
 
 global cut Mpay 
 
-N = 15; % Tamanho do Individuo
+Nvars = 15; % Tamanho do Individuo
 Npop = 50; % Tamanho da populacao
+Ngen = 100; % Numero de geracoes
+Neli = 1; % Numero de elitismo
 
 
-Mpay = 100; %[kg]
-cut = zeros(1,N);
+Mpay = 7500; %[kg]
+cut = zeros(1,Nvars);
 cut(5) = 1; % corte do individuo
 %[ 5 10 ]
 %[ N Sigma]
@@ -35,9 +39,12 @@ cut(5) = 1; % corte do individuo
 opts = gaoptimset(...
     'PopulationType','bitstring', ...   
     'PopulationSize', Npop, ...
-    'Generations', 50, ...
-    'EliteCount', 1, ...%'TolFun', 1e-8, ...
-    'PlotFcns', @gaplotbestfModified);
+    'Generations', Ngen, ...
+    'EliteCount', Neli, ...
+    'PlotFcns', @gaplotbestfModified,...
+    'MutationFcn',{@mutationuniform}, ...
+    'SelectionFcn', @selectionroulette,...
+    'HybridFcn',@fgoalattain);
 
 %%
 %
@@ -48,8 +55,8 @@ opts = gaoptimset(...
 % vector |[1 2]| to |ga| after the nonlinear constraint input and before
 % the options input. We also seed and set the random number generator here
 % for reproducibility.
-rng(0, 'twister');
-[xbest, fbest, exitflag] = gamultiobj(@fitn, N, [], [], [], [], ...
+%rng(0, 'twister');
+[xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     [], [], [], [], opts);
     
 %% 
@@ -65,7 +72,9 @@ rng(0, 'twister');
 % nearest the support is constrained to have a width ($x_1$) and height
 % ($x_2$) which is an integer value and this constraint has been honored by
 % GA.
-display(xbest);
+%display(xbest);
+
+analyzeBest(xbest)
 
 %%
 % We can also ask |ga| to return the optimal volume of the beam. 
@@ -76,4 +85,27 @@ fprintf('\nCost function returned by ga = %g\n', fbest);
 %
 % [1] Survey of discrete variable optimization for structural design, P.B.
 % Thanedar, G.N. Vanderplaats, J. Struct. Eng., 121 (3), 301-306 (1995)
-displayEndOfDemoMessage(mfilename)
+%displayEndOfDemoMessage(mfilename)
+
+end 
+function analyzeBest(xbest)
+global cut Mpay W1 W2 e
+
+g = sprintf('%d ', xbest);
+fprintf('BEST: %s\n', g)
+
+out = divVec(xbest,cut);
+N = de2re(out{1},1,5);
+fprintf('N: %f \n',N)
+
+lambda = de2re(out{2},0.0001,1);
+fprintf('lambda: %f \n',lambda)
+
+obj(1) = abs(real(log(lambda + e*(1 - lambda)))^(-N)/W1);
+fprintf('Vehicle Mass: %f \n',obj(1))
+
+obj(2) = (Mpay/((lambda)^N));
+fprintf('Vehicle Mass: %f \n',obj(2))
+
+
+end 
