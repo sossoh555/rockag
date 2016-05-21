@@ -1,20 +1,25 @@
-function main
+Global cut Mpay Udes DEBUG
+
+function GA
 
 clear all 
 close all
 clc
 
-global cut Mpay 
+Global cut Mpay Udes DEBUG
 
-Nvars = 15; % Tamanho do Individuo
-Npop = 30; % Tamanho da populacao
+global cut Mpay Udes
+
+var = [5 8];
+Nvars = sum(var(:)); % Tamanho do Individuo
+Npop = 50; % Tamanho da populacao
 Ngen = 100; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 
-
-Mpay = 4500; %[kg]
+Udes = 5; 
+Mpay = 5000; %[kg]
 cut = zeros(1,Nvars);
-cut(5) = 1; % corte do individuo
+cut(var(1:end-1)) = 1; % corte do individuo
 %[ 5 10 ]
 %[ N Sigma]
 
@@ -37,11 +42,14 @@ cut(5) = 1; % corte do individuo
 % solving mixed integer problems - see Global Optimization Toolbox User's
 % Guide for more details.
 opts = gaoptimset(...
-    'PopulationType','bitstring', ...   
+    'PopulationType','bitstring', ... 
+    'Display','iter',...
     'PopulationSize', Npop, ...
     'Generations', Ngen, ...
-    'EliteCount', Neli, ...%'TolFun', 1e-8, ...
-    'PlotFcns', @gaplotbestfModified);
+    'EliteCount', Neli, ...
+    'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance},...
+    'MutationFcn',{@mutationuniform,0.05}, ...
+    'SelectionFcn', @selectionroulette);
 
 %%
 %
@@ -52,10 +60,10 @@ opts = gaoptimset(...
 % vector |[1 2]| to |ga| after the nonlinear constraint input and before
 % the options input. We also seed and set the random number generator here
 % for reproducibility.
-rng(0, 'twister');
+%rng(0, 'twister');
 [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     [], [], [], [], opts);
-    
+ 
 %% 
 %
 % _Analyze the Results_
@@ -69,9 +77,9 @@ rng(0, 'twister');
 % nearest the support is constrained to have a width ($x_1$) and height
 % ($x_2$) which is an integer value and this constraint has been honored by
 % GA.
-display(xbest);
+%display(xbest);
 
-
+analyzeBest(xbest)
 
 %%
 % We can also ask |ga| to return the optimal volume of the beam. 
@@ -86,6 +94,10 @@ fprintf('\nCost function returned by ga = %g\n', fbest);
 
 end 
 function analyzeBest(xbest)
+global cut Mpay W1 W2 e
+
+g = sprintf('%d ', xbest);
+fprintf('BEST: %s\n', g)
 
 out = divVec(xbest,cut);
 N = de2re(out{1},1,5);
@@ -94,9 +106,11 @@ fprintf('N: %f \n',N)
 lambda = de2re(out{2},0.0001,1);
 fprintf('lambda: %f \n',lambda)
 
+obj(1) = abs(real(log(lambda + e*(1 - lambda)))^(-N)/W1);
+fprintf('U: %f \n',obj(1))
 
-obj(2) = (Mpay/((lambda)^N));
-fprintf('Vehicle Mass: %f \n',obj(2))
+Mvec = (Mpay/((lambda)^N));
+fprintf('Vehicle Mass: %f \n',Mvec)
 
 
 end 

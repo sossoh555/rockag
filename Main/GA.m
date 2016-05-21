@@ -1,20 +1,24 @@
-function main
+function GA
 
 clear all 
 close all
 clc
 
-global cut Mpay Udes
+global  cut Mpay Udes DEBUG
 
-Nvars = 15; % Tamanho do Individuo
+%lobal cut Mpay Udes
+
+var = [5 8];
+Nvars = sum(var(:)); % Tamanho do Individuo
 Npop = 10; % Tamanho da populacao
-Ngen = 100; % Numero de geracoes
+Ngen = 10; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 
+DEBUG = false;
 Udes = 5; 
-Mpay = 7500; %[kg]
+Mpay = 5000; %[kg]
 cut = zeros(1,Nvars);
-cut(5) = 1; % corte do individuo
+cut(var(1:end-1)) = 1; % corte do individuo
 %[ 5 10 ]
 %[ N Sigma]
 
@@ -37,13 +41,13 @@ cut(5) = 1; % corte do individuo
 % solving mixed integer problems - see Global Optimization Toolbox User's
 % Guide for more details.
 opts = gaoptimset(...
-    'PopulationType','bitstring', ...   
+    'PopulationType','bitstring', ... 
+    'Display','diagnose',...
     'PopulationSize', Npop, ...
     'Generations', Ngen, ...
     'EliteCount', Neli, ...
-    'PlotFcns', {@gaplotbestfModified}, ...%,@gaplotscores,@gaplotdistance},...
-    'MutationFcn',{@mutationuniform}, ...
-    'FitnessScalingFcn',{@fitscalingprop},...
+    'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance},...
+    'MutationFcn',{@mutationuniform,0.05}, ...
     'SelectionFcn', @selectionroulette);
 
 %%
@@ -58,7 +62,7 @@ opts = gaoptimset(...
 %rng(0, 'twister');
 [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     [], [], [], [], opts);
-    
+ 
 %% 
 %
 % _Analyze the Results_
