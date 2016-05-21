@@ -1,28 +1,39 @@
 function val = fitn(x)
-global cut Mpay W1 W2 e Udes
+global cut Mpay W1 W2 e Udes DEBUG
 
 W1 = 1;
-W2 = 100000;
+W2 = 1000000;
 
+
+
+%out = divVec(x,cut);
+
+%N = de2re(out{1},1,5);
+N = x(1);
+%lambda = de2re(out{2},0.0001,1);
+lambda = x(2);
+
+e = 0.01;
+
+
+obj(1) =  abs(real(log(lambda + e*(1 - lambda)))^(-N));
+
+obj(2) = (Mpay/((lambda)^N));
+
+val = obj(1)/W1 + obj(2)/W2;
+
+%if val > 10; val = 10;end
+
+if DEBUG
 g = sprintf('%d ', x);
 fprintf('Answer: %s\n', g)
-e = 0.1;
-out = divVec(x,cut);
-
-N = de2re(out{1},1,5);
 fprintf('N: %f \n',N)
-
-lambda = de2re(out{2},0.0001,1);
 fprintf('lambda: %f \n',lambda)
-
-obj(1) =  abs(Ureal(log(lambda + e*(1 - lambda)))^(-N)/W1);
 fprintf('obj(1): %f \n',obj(1))
-
-% obj(2) = (Mpay/((lambda)^N));
-% fprintf('obj(2): %f \n',obj(2))
-
-val = obj(1) %+ obj(2)/W2;
+fprintf('obj(2): %f \n',obj(2))
 fprintf('val: %f \n',val)
+fprintf('\n\n')
+end
 
 %fprintf('\n\n',obj(2))
 

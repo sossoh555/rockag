@@ -5,20 +5,24 @@ W1 = 1;
 W2 = 1000000;
 
 
+
+%out = divVec(x,cut);
+
+%N = de2re(out{1},1,5);
+N = x(1);
+%lambda = de2re(out{2},0.0001,1);
+lambda = x(2);
+
 e = 0.1;
-out = divVec(x,cut);
 
-N = de2re(out{1},1,5);
 
-lambda = de2re(out{2},0.0001,1);
-
-obj(1) =  abs(real(log(lambda + e*(1 - lambda)))^(-N)/W1);
+obj(1) =  abs(Udes - real(log(lambda + e*(1 - lambda))^(N)));
 
 obj(2) = (Mpay/((lambda)^N));
 
-val = obj(1) + obj(2)/W2;
+val = obj(1)/W1 + obj(2)/W2;
 
-if val > 10; val = 10;end
+if val > 5; val = 5;end
 
 if DEBUG
 g = sprintf('%d ', x);
