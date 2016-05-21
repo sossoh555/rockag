@@ -30,7 +30,7 @@ switch flag
     case 'iter'
         best = min(state.Score);
         m    = meanf(state.Score);
-        set(gca,'ylim',[1,best + 0.5*best]);
+        %set(gca,'ylim',[1,best + 0.5*best]);
         plotBest = findobj(get(gca,'Children'),'Tag','gaplotbestf');
         plotMean = findobj(get(gca,'Children'),'Tag','gaplotmean');
         newX = [get(plotBest,'Xdata') state.Generation];

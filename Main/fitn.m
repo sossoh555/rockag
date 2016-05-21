@@ -1,5 +1,5 @@
 function val = fitn(x)
-global cut Mpay W1 W2 e
+global cut Mpay W1 W2 e Udes
 
 W1 = 1;
 W2 = 100000;
@@ -22,6 +22,8 @@ obj(2) = (Mpay/((lambda)^N));
 fprintf('obj(2): %f \n',obj(2))
 
 val = obj(1) + obj(2)/W2;
+fprintf('val: %f \n',val)
 
+%fprintf('\n\n',obj(2))
 
 %U = 100*(x(1)*x(2) + x(3)*x(4) + x(5)*x(6) + x(7)*x(8) + x(9)*x(10));

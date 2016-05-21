@@ -4,14 +4,14 @@ clear all
 close all
 clc
 
-global cut Mpay 
+global cut Mpay Udes
 
 Nvars = 15; % Tamanho do Individuo
-Npop = 50; % Tamanho da populacao
+Npop = 10; % Tamanho da populacao
 Ngen = 100; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 
-
+Udes = 5; 
 Mpay = 7500; %[kg]
 cut = zeros(1,Nvars);
 cut(5) = 1; % corte do individuo
@@ -41,10 +41,10 @@ opts = gaoptimset(...
     'PopulationSize', Npop, ...
     'Generations', Ngen, ...
     'EliteCount', Neli, ...
-    'PlotFcns', @gaplotbestfModified,...
+    'PlotFcns', {@gaplotbestfModified}, ...%,@gaplotscores,@gaplotdistance},...
     'MutationFcn',{@mutationuniform}, ...
-    'SelectionFcn', @selectionroulette,...
-    'HybridFcn',@fgoalattain);
+    'FitnessScalingFcn',{@fitscalingprop},...
+    'SelectionFcn', @selectionroulette);
 
 %%
 %
@@ -102,10 +102,10 @@ lambda = de2re(out{2},0.0001,1);
 fprintf('lambda: %f \n',lambda)
 
 obj(1) = abs(real(log(lambda + e*(1 - lambda)))^(-N)/W1);
-fprintf('Vehicle Mass: %f \n',obj(1))
+fprintf('U: %f \n',obj(1))
 
-obj(2) = (Mpay/((lambda)^N));
-fprintf('Vehicle Mass: %f \n',obj(2))
+Mvec = (Mpay/((lambda)^N));
+fprintf('Vehicle Mass: %f \n',Mvec)
 
 
 end 
