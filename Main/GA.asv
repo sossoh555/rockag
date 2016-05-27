@@ -1,27 +1,40 @@
 function GA
 
-clear all 
+
+clear all
 close all
 clc
 
 global cut Mpay Udes DEBUG g0 Isp
 
-%lobal cut Mpay Udes
-
-%var = [5 8];
-%Nvars = sum(var(:)); % Tamanho do Individuo
-Nvars = 2;
+DEBUG = false;
+Udes = 5;
+Isp = 300;
+g0 = 9.81/1000;
+Mpay = 5000; %[kg]
 Npop = 100; % Tamanho da populacao
 Ngen = 150; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 
-DEBUG = false;
-Udes = 5.0;
-Isp = 300;
-g0 = 9.81/1000
-Mpay = 5000; %[kg]
-lb = [0.00001 0.1 1];
-ub = [1 1 6];
+type = 'bitstring'; % doubleVector
+
+
+
+if strcmp(type,'bitstring'),
+    var = [5 10 10]
+    Nvars = sum(var(:)); %tamanho do indivíduo
+    
+elseif strcmp(type,'doubleVector')
+    Nvars = 3;
+    lb = [0.00001 0.1 1];
+    ub = [1 1 6];
+end
+
+
+
+
+
+
 %cut = zeros(1,Nvars);
 %cut(var(1:end-1)) = 1; % corte do individuo
 %[ 5 10 ]
@@ -46,7 +59,7 @@ ub = [1 1 6];
 % solving mixed integer problems - see Global Optimization Toolbox User's
 % Guide for more details.
 opts = gaoptimset(...
-    'PopulationType','doubleVector', ... 
+    'PopulationType','doubleVector', ...
     'Display','diagnose',...
     'PopulationSize', Npop, ...
     'Generations', Ngen, ...
@@ -68,8 +81,8 @@ opts = gaoptimset(...
 %rng(0, 'twister');
 [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     lb, ub, [], [], opts);
- 
-%% 
+
+%%
 %
 % _Analyze the Results_
 %
@@ -87,7 +100,7 @@ opts = gaoptimset(...
 %analyzeBest(xbest)
 
 %%
-% We can also ask |ga| to return the optimal volume of the beam. 
+% We can also ask |ga| to return the optimal volume of the beam.
 fprintf('\nCost function returned by ga = %g\n', fbest);
 fprintf('%g ', xbest);
 fprintf('\n')
@@ -103,26 +116,26 @@ plotN(xbest)
 % Thanedar, G.N. Vanderplaats, J. Struct. Eng., 121 (3), 301-306 (1995)
 %displayEndOfDemoMessage(mfilename)
 
-end 
+end
 % function analyzeBestString(xbest)
 % global cut Mpay W1 W2 e
-% 
+%
 % g = sprintf('%d ', xbest);
 % fprintf('BEST: %s\n', g)
-% 
+%
 % out = divVec(xbest,cut);
 % N = de2re(out{1},1,5);
 % fprintf('N: %f \n',N)
-% 
+%
 % lambda = de2re(out{2},0.0001,1);
 % fprintf('lambda: %f \n',lambda)
-% 
+%
 % obj(1) = abs(real(log(lambda + e*(1 - lambda)))^(-N)/W1);
 % fprintf('U: %f \n',obj(1))
-% 
+%
 % Mvec = (Mpay/((lambda)^N));
 % fprintf('Vehicle Mass: %f \n',Mvec)
-% end 
+% end
 
 function analyzeBestVec(x)
 global W1 e Mpay W2 Udes

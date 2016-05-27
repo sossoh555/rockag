@@ -1,34 +1,58 @@
 function GA
 
-clear all 
+
+clear all
 close all
 clc
 
-global cut Mpay Udes DEBUG g0 Isp
+global cut Mpay Udes DEBUG g0 Isp type test
 
-%lobal cut Mpay Udes
+test = struct('Nmin',1,'Nmax',6,...
+              'Lmin',0.0001, 'Lmax',1, ...
+              'Emin',0.1,'Emax',1);
 
-%var = [5 8];
-%Nvars = sum(var(:)); % Tamanho do Individuo
-Nvars = 2;
-Npop = 100; % Tamanho da populacao
-Ngen = 150; % Numero de geracoes
+DEBUG = true;
+Udes = 5;
+Isp = 300;
+g0 = 9.81/1000;
+Mpay = 5000; %[kg]
+Npop = 40; % Tamanho da populacao
+Ngen = 50; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 
-DEBUG = false;
-Udes = 1;
-Isp = 300;
-g0 = 9.81/1000
-Mpay = 5000; %[kg]
-lb = [0.00001 0.1];
-ub = [1 1];
-%cut = zeros(1,Nvars);
-%cut(var(1:end-1)) = 1; % corte do individuo
-%[ 5 10 ]
-%[ N Sigma]
 
-%lb = [1 30 2.4 45 2.4 45 1 30 1 30];
-%ub = [5 65 3.1 60 3.1 60 5 65 5 65];
+type = 'bitString'; % doubleVector
+%type = 'doubleVector';
+
+
+if strcmp(type,'bitString'),
+    var = [5 10 10];
+    Nvars = sum(var(:)); %tamanho do indivíduo
+    cut = zeros(1,Nvars);
+    pos = 0;
+    for i = 1:size(var,2)-1,
+        pos = pos + var(i);
+        cut(pos) = 1;
+    end
+
+    %[ 5 10 ]
+%[ N Sigma]
+    lb = [];
+    ub = [];
+elseif strcmp(type,'doubleVector')
+    Nvars = 3;
+    lb = [1 0.00001 0.1];
+    ub = [6 1 1];
+else
+    error(['Não existe o tipo de GA selecionado: ' type])
+end
+
+
+
+
+
+
+
 
 %%
 %
@@ -46,7 +70,7 @@ ub = [1 1];
 % solving mixed integer problems - see Global Optimization Toolbox User's
 % Guide for more details.
 opts = gaoptimset(...
-    'PopulationType','doubleVector', ... 
+    'PopulationType',type, ...
     'Display','diagnose',...
     'PopulationSize', Npop, ...
     'Generations', Ngen, ...
@@ -54,7 +78,8 @@ opts = gaoptimset(...
     'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance,@gaplotscorediversity},...
     'FitnessScalingFcn', @fitscalingrank,...
     'MutationFcn',@mutationadaptfeasible, ...
-    'SelectionFcn', @selectionroulette);
+    'SelectionFcn', @selectionroulette,...
+    'FitnessScalingFcn', {@fitscalingtop,0.9});
 
 %%
 %
@@ -68,8 +93,8 @@ opts = gaoptimset(...
 %rng(0, 'twister');
 [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     lb, ub, [], [], opts);
- 
-%% 
+
+%%
 %
 % _Analyze the Results_
 %
@@ -87,12 +112,12 @@ opts = gaoptimset(...
 %analyzeBest(xbest)
 
 %%
-% We can also ask |ga| to return the optimal volume of the beam. 
+% We can also ask |ga| to return the optimal volume of the beam.
 fprintf('\nCost function returned by ga = %g\n', fbest);
 fprintf('%g ', xbest);
 fprintf('\n')
-delV = abs(g0*Isp*log((1+xbest(1))/(xbest(2) + xbest(1))));
-fprintf('deltaV: %f \n\n', delV);
+%delV = abs(g0*Isp*log((1+xbest(1))/(xbest(2) + xbest(1))));
+%fprintf('deltaV: %f \n\n', delV);
 
 plotN(xbest)
 %analyzeBestVec(xbest)
@@ -103,26 +128,26 @@ plotN(xbest)
 % Thanedar, G.N. Vanderplaats, J. Struct. Eng., 121 (3), 301-306 (1995)
 %displayEndOfDemoMessage(mfilename)
 
-end 
+end
 % function analyzeBestString(xbest)
 % global cut Mpay W1 W2 e
-% 
+%
 % g = sprintf('%d ', xbest);
 % fprintf('BEST: %s\n', g)
-% 
+%
 % out = divVec(xbest,cut);
 % N = de2re(out{1},1,5);
 % fprintf('N: %f \n',N)
-% 
+%
 % lambda = de2re(out{2},0.0001,1);
 % fprintf('lambda: %f \n',lambda)
-% 
+%
 % obj(1) = abs(real(log(lambda + e*(1 - lambda)))^(-N)/W1);
 % fprintf('U: %f \n',obj(1))
-% 
+%
 % Mvec = (Mpay/((lambda)^N));
 % fprintf('Vehicle Mass: %f \n',Mvec)
-% end 
+% end
 
 function analyzeBestVec(x)
 global W1 e Mpay W2 Udes
