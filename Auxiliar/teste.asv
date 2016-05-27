@@ -1,16 +1,59 @@
-clc
 clear all
 close all
+clc
 
-N = 15;  %// Input Datasize
+opt = 'ALL'
+%LAST
+opengl('save','software')
+N = 1:1:15;
+pPL = 0.05;
+e = 0.15;
+Isp = 350;
+g = 9.81/1000;
 
-vec = randi(1,1,N); %// Random inputs
-cut = ones(1,N);%randi(2,1,N)-1;
-cut(5) = 0;
+num = (pPL.^(1./N))*(1-e) + e;
+vb = log(1./num)*Isp*g.*N;
 
-disp('-------------------- With CUMSUM + ACCUMARRAY')
-tic
-id = cumsum(cut)+1;
-mask = cut==0;
-out = accumarray(id(mask).',vec(mask).',[],@(x) {x});
-toc
+hPlot = plot(N,vb,'--bs',...
+    'LineWidth',1.2,...
+    'MarkerSize',5,...
+    'MarkerEdgeColor','r',...
+    'MarkerFaceColor',[1,1,1])
+hXLabel = xlabel('N')
+hYLabel = ylabel('\DeltaV');
+hTitle  = title ('Título');
+
+if opt == 'ALL',
+    
+    strValues = strtrim(cellstr(num2str([vb(:)],'%.2f')));
+    hText = text(N,vb,strValues,'HorizontalAlignment','right','VerticalAlignment','bottom');
+    
+elseif opt == 'LAST'
+    strValues = strtrim(cellstr(num2str([vb(end)],'%.7f')));
+    hText = text(N(end),vb(end),strValues,'HorizontalAlignment','right','VerticalAlignment','bottom');
+end
+
+
+tes =  strtrim(cellstr(num2str(2,'v_{b\infty}  %.2f')));
+text(8, 8,'v_{b\inf})
+
+
+set(gca,'FontName','Helvetica');
+set([hTitle, hXLabel, hYLabel],'FontName','AvantGarde');
+set(hText,'FontName','AvantGarde','FontSize',11);
+set([hXLabel, hYLabel],'FontSize',10);
+set(hTitle,'FontSize', 12,'FontWeight','bold');
+set(gca,'XTick', 0:1:N(end)+ 1);
+
+set(gca, ...
+    'Box'         , 'off'     , ...
+    'TickDir'     , 'out'     , ...
+    'TickLength'  , [.02 .02] , ...
+    'XMinorTick'  , 'off'      , ...
+    'YMinorTick'  , 'on'      , ...
+    'YGrid'       , 'on'      , ...
+    'XColor'      , [.3 .3 .3], ...
+    'YColor'      , [.3 .3 .3], ...
+    'YTick'       , 0:1:10, ...
+    'LineWidth'   , 1         );
+grid on

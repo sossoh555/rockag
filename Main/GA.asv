@@ -4,7 +4,7 @@ clear all
 close all
 clc
 
-global cut Mpay Udes DEBUG
+global cut Mpay Udes DEBUG g0 Isp
 
 %lobal cut Mpay Udes
 
@@ -16,10 +16,12 @@ Ngen = 150; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 
 DEBUG = false;
-Udes = 5; 
+Udes = 5.0;
+Isp = 300;
+g0 = 9.81/1000
 Mpay = 5000; %[kg]
-lb = [1 0.001]
-ub = [6 1]
+lb = [0.00001 0.1 1];
+ub = [1 1 6];
 %cut = zeros(1,Nvars);
 %cut(var(1:end-1)) = 1; % corte do individuo
 %[ 5 10 ]
@@ -87,7 +89,13 @@ opts = gaoptimset(...
 %%
 % We can also ask |ga| to return the optimal volume of the beam. 
 fprintf('\nCost function returned by ga = %g\n', fbest);
-analyzeBestVec(xbest)
+fprintf('%g ', xbest);
+fprintf('\n')
+delV = abs(g0*Isp*log((1+xbest(1))/(xbest(2) + xbest(1))));
+fprintf('deltaV: %f \n\n', delV);
+
+plotN(xbest)
+%analyzeBestVec(xbest)
 
 %% References
 %
@@ -117,14 +125,15 @@ end
 % end 
 
 function analyzeBestVec(x)
-global W1 e Mpay W2
+global W1 e Mpay W2 Udes
 g = sprintf('%d ', x);
 fprintf('BEST: %s\n', g)
 
 N = x(1);
 lambda = x(2);
 
-obj(1) = abs(real((-N)*log(lambda + e*(1 - lambda))))/W1;
+obj(1) =  abs(Udes - real(log(lambda + e*(1 - lambda))^(N)));
+
 fprintf('U: %f \n',obj(1))
 
 Mvec = (Mpay/((lambda)^N));
