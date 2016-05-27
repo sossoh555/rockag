@@ -71,6 +71,7 @@ delVFit = (Udes - delV)/Udes/W1;
 MvecFit = Mvec/W2;
 %CostFit = Cost/W3;
 FITNESS = delVFit + MvecFit;
+if FITNESS >1, FITNESS = 1; end
 
 if DEBUG
     colheadings = {'FIT','lambda','e','N','DeltaV','DeltaVFit','Mvec','MvecFit','Cost','CostFit'};
