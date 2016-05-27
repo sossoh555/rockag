@@ -11,15 +11,15 @@ test = struct('Nmin',1,'Nmax',6,...
               'Lmin',0.0001, 'Lmax',1, ...
               'Emin',0.1,'Emax',1);
 
-DEBUG = true;
-Udes = 5;
+DEBUG = false;
+Udes = 20;
 Isp = 300;
 g0 = 9.81/1000;
-Mpay = 5000; %[kg]
-Npop = 40; % Tamanho da populacao
-Ngen = 50; % Numero de geracoes
+Mpay = 7400; %[kg]
+Npop = 10; % Tamanho da populacao
+Ngen = 200; % Numero de geracoes
 Neli = 1; % Numero de elitismo
-
+mutationRate = 0.01; % 1 Percent
 
 type = 'bitString'; % doubleVector
 %type = 'doubleVector';
@@ -69,17 +69,20 @@ end
 % Note that there are a restricted set of |ga| options available when
 % solving mixed integer problems - see Global Optimization Toolbox User's
 % Guide for more details.
+hybridopts = optimoptions('fminunc','Display','iter','Algorithm','quasi-newton');
+
 opts = gaoptimset(...
     'PopulationType',type, ...
     'Display','diagnose',...
     'PopulationSize', Npop, ...
     'Generations', Ngen, ...
     'EliteCount', Neli, ...
-    'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance,@gaplotscorediversity},...
+    'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance,@gaplotscorediversity,@gaplotbestindiv,@gaplotrange},...
+    'CrossoverFcn', @crossoverscattered,...
     'FitnessScalingFcn', @fitscalingrank,...
-    'MutationFcn',@mutationadaptfeasible, ...
+    'MutationFcn',{@mutationuniform, 0.05}, ...
     'SelectionFcn', @selectionroulette,...
-    'FitnessScalingFcn', {@fitscalingtop,0.9});
+    'FitnessScalingFcn', @fitscalingrank);
 
 %%
 %
@@ -113,13 +116,17 @@ opts = gaoptimset(...
 
 %%
 % We can also ask |ga| to return the optimal volume of the beam.
-fprintf('\nCost function returned by ga = %g\n', fbest);
-fprintf('%g ', xbest);
+%fprintf('\nCost function returned by ga = %g\n', fbest);
+%fprintf('%g ', xbest);
 fprintf('\n')
+fprintf('%%%%%%%%%%BEST INDIVIDUAL%%%%%%%%%%%\n\n')
+DEBUG = true;
+fitn(xbest);
+DEBUG = false;
 %delV = abs(g0*Isp*log((1+xbest(1))/(xbest(2) + xbest(1))));
 %fprintf('deltaV: %f \n\n', delV);
 
-plotN(xbest)
+plotN(xbest);
 %analyzeBestVec(xbest)
 
 %% References
