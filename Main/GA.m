@@ -8,16 +8,16 @@ clc
 global cut Mpay Udes DEBUG g0 Isp type test
 
 test = struct('Nmin',1,'Nmax',6,...
-              'Lmin',0.0001, 'Lmax',1, ...
+              'Lmin',0.001, 'Lmax',0.2, ...
               'Emin',0.1,'Emax',1);
 
 DEBUG = false;
-Udes = 20;
-Isp = 300;
+Udes = 5.657;
+Isp = 350;
 g0 = 9.81/1000;
-Mpay = 7400; %[kg]
-Npop = 10; % Tamanho da populacao
-Ngen = 200; % Numero de geracoes
+Mpay = 10000; %[kg]
+Npop = 70; % Tamanho da populacao
+Ngen = 100; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.01; % 1 Percent
 
@@ -41,8 +41,8 @@ if strcmp(type,'bitString'),
     ub = [];
 elseif strcmp(type,'doubleVector')
     Nvars = 3;
-    lb = [1 0.00001 0.1];
-    ub = [6 1 1];
+    lb = [test.Nmin test.Lmin test.Emin];
+    ub = [test.Nmax test.Lmax test.Emax];
 else
     error(['Não existe o tipo de GA selecionado: ' type])
 end
@@ -69,7 +69,6 @@ end
 % Note that there are a restricted set of |ga| options available when
 % solving mixed integer problems - see Global Optimization Toolbox User's
 % Guide for more details.
-hybridopts = optimoptions('fminunc','Display','iter','Algorithm','quasi-newton');
 
 opts = gaoptimset(...
     'PopulationType',type, ...
@@ -80,9 +79,10 @@ opts = gaoptimset(...
     'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance,@gaplotscorediversity,@gaplotbestindiv,@gaplotrange},...
     'CrossoverFcn', @crossoverscattered,...
     'FitnessScalingFcn', @fitscalingrank,...
-    'MutationFcn',{@mutationuniform, 0.05}, ...
+    'MutationFcn',{@mutationuniform, 0.01}, ...
     'SelectionFcn', @selectionroulette,...
-    'FitnessScalingFcn',{@fitscalingtop,0.4});
+    'StallGenLimit', 50, ...
+    'FitnessScalingFcn',{@fitscalingtop,0.9});
 
 %%
 %
@@ -94,8 +94,17 @@ opts = gaoptimset(...
 % the options input. We also seed and set the random number generator here
 % for reproducibility.
 %rng(0, 'twister');
+
+%================================
+%             GA        
+%================================
 [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     lb, ub, [], [], opts);
+
+%================================
+%           MULTI GA        
+%================================
+
 
 %%
 %

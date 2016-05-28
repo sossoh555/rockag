@@ -1,11 +1,11 @@
-function FITNESS = fitn(x)
+function FITNESS = fitnMulti(x)
 global cut Mpay g0 Isp Udes DEBUG type test
 
 A = 0.6:-0.1:0.1;
 B = 15:2:25;
 W1 = 1;
+W3 = 1;
 W2 = 1E8;
-W3 = 4E3;
 Cost = 0; 
 CostFit = 0;
 
@@ -33,26 +33,21 @@ end
 %=======================
 %          U
 %=======================
-U = log(((1+lambda)/(e + lambda))^N);
+U = log((1+lambda)/(e + lambda));
 delV = g0*Isp*U;
-pPL = lambda/(1+lambda);
 
-%num = (pPL^(1/N))*(1-e) + e;
-%U = log(1/num);
-%delV = U*Isp*g0*N;
+
 
 %=======================
 %         Mvec
 %=======================
-
+pPL = lambda/(1+ lambda);
 mf = Mpay*((lambda+e)/lambda);
+
 num = (pPL^(1/N))*(1-e) + e;
 n = (1/num)^N;
 
 Mvec = mf*n;
-
-num = (pPL.^(1./N))*(1-e) + e;
-vb = log(1./num)*Isp*g.*N;
 
 %Nmax = round(N);
 %for i =0:1:Nmax
@@ -66,50 +61,31 @@ vb = log(1./num)*Isp*g.*N;
 %=======================
 %        Cost
 %=======================
-N = round(N);
-Cost = 0;
-for i=1:N,
-Cost = Cost + N*(1 + A(N)*exp(-((0.025*B(N))/(lambda-lambda*e+e))^3.5));
-end
+%Cost = N*(1 + A(N)*exp(-((0.025*B(N))/(lambda-lambda*e+e))^3.5));
+
 
 %=======================
 %        FITNESS
 %=======================
-delVFit = abs((Udes - delV)/Udes/W1);
+delVFit = (Udes - delV)/Udes/W1;
 MvecFit = Mvec/W2;
-CostFit = Cost/W3;
-FITNESS = delVFit + MvecFit;% + CostFit;
-if FITNESS >1, FITNESS = 1; end
+%CostFit = Cost/W3;
+%FITNESS = delVFit + MvecFit;
+%if FITNESS >1, FITNESS = 1; end
 
+FITNESS(1) = delVFit;
+FITNESS(2) = MvecFit;
 if DEBUG
-    %%%%%%%%%%%%%%%% INFORMACOES DO AG %%%%%%%%%%%%%%%%%%%%%%%
-    colheadings = {'FIT','DeltaVFit','MvecFit','CostFit','lambda','e','N','DeltaV','Mvec','Cost'};
+    colheadings = {'FIT','lambda','e','N','DeltaV','DeltaVFit','Mvec','MvecFit','Cost','CostFit'};
     rowheadings = {'Res'};
-    fms = {'.2E','.2E','.2E','.2E','.4f','.4f','.2f','.4f','.4f','.4f'};
+    fms = {'.4f','.4f','.4f','.2f','.4f','.4f','.f','.4f','.4f','.4f'};
     fileID = 1;
-    wid = 9;
-    data = [FITNESS delVFit MvecFit CostFit lambda e N delV  Mvec Cost];
+    wid = 7;
+    data = [FITNESS lambda e N delV delVFit Mvec MvecFit Cost CostFit];
     fprintf('\n')
     displaytable(data,colheadings,wid,fms,rowheadings,fileID);
     fprintf('\n')
    
-    
-    %%%%%%%%%%%%%%%%%% ALGUNS CALCULOS %%%%%%%%%%%%%%%%%%%%%%%%%
-    mp = Mvec - mf;
-    mE = Mvec - mp - Mpay;
-    fprintf('======== CALCULATED ======== \n')
-    colheadings = {'N','pPL [%]','Mpay [kg]','mf [kg]','mp [kg]','mE [kg]',...
-        'Mvec [kg]','dV [kg/s]','Cost [U$]'};
-    rowheadings = {'Res'};
-    fms = {'.2f','.4f','.1f','.1f','.1f','.1f','.2f','.4f','.4f'};
-    fileID = 1;
-    wid = 10;
-    data = [N pPL*100 Mpay mf mp mE Mvec delV Cost];
-    fprintf('\n')
-    displaytable(data,colheadings,wid,fms,rowheadings,fileID);
-    fprintf('\n')
-   
-    
     % fprintf('\n FIT \t Lamb  \t estr \t DelvaV \t Mvec \t Mfit\t\t Cost')
    % fprintf('\n %.3f \t %.3f  \t %.3f \t %.3f \t %.3f \t %.3f \n\n',val, lambda,e,N,delV,Mvec,MvecFit)
 end
