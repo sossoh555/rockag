@@ -1,5 +1,5 @@
 function plotN(x)
-global g0 Isp cut test type out
+global g0 Isp cut test type out finalName PATH
 e = [0.001 0.01 0.05 0.1 0.2 0.5];
 l = 0.0001:0.0001:1;
 
@@ -26,4 +26,5 @@ U=g0*Isp*log((1+lBest)./(lBest+eBest));
 semilogx(lBest,U,'b*')
 %legend('toggle')
 legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5')
+ saveas(gcf, strcat(fullfile(PATH, finalName),'.fig'))
 end

@@ -5,8 +5,11 @@ clear all
 close all
 clc
 
-global cut Mpay Udes DEBUG g0 Isp type test
 
+global cut Mpay Udes DEBUG g0 Isp type test fileID finalName
+global PATH
+
+PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\rockag\Main\Data\';
 test = struct('Nmin',1,'Nmax',6,...
               'Lmin',0.001, 'Lmax',0.2, ...
               'Emin',0.1,'Emax',1);
@@ -15,14 +18,34 @@ DEBUG = false;
 Udes = 5.657;
 Isp = 350;
 g0 = 9.81/1000;
-Mpay = 10000; %[kg]
-Npop = 70; % Tamanho da populacao
-Ngen = 100; % Numero de geracoes
+Mpay = 5; %[kg]
+Npop = 10; % Tamanho da populacao
+Ngen = 10; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.01; % 1 Percent
 
 type = 'bitString'; % doubleVector
 %type = 'doubleVector';
+
+
+%=============================
+%            FILE
+%=============================
+
+ DateString = strrep(datestr(datetime('now')),':','');
+ finalName = strcat(DateString,...
+     '-',type,'-',...
+     num2str(Npop),'-',...
+     num2str(Ngen),'-',...
+     num2str(Mpay));
+% 
+% fileID = fopen(finalName,'w');
+% 
+% 
+% fprintf(fileID,'%6s %12s\n','x','exp(x)');
+
+
+
 
 
 if strcmp(type,'bitString'),
@@ -82,7 +105,8 @@ opts = gaoptimset(...
     'MutationFcn',{@mutationuniform, 0.01}, ...
     'SelectionFcn', @selectionroulette,...
     'StallGenLimit', 50, ...
-    'FitnessScalingFcn',{@fitscalingtop,0.9});
+    'FitnessScalingFcn',{@fitscalingtop,0.9},...
+    'OutputFcn',@outputGA);
 
 %%
 %
@@ -100,7 +124,7 @@ opts = gaoptimset(...
 %================================
 [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     lb, ub, [], [], opts);
-
+% print(strcat('ALLplots',finalName),'-depsc');
 %================================
 %           MULTI GA        
 %================================
@@ -136,6 +160,8 @@ DEBUG = false;
 %fprintf('deltaV: %f \n\n', delV);
 
 plotN(xbest);
+
+%fclose(fileID);
 %analyzeBestVec(xbest)
 
 %% References

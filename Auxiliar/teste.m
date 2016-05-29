@@ -20,8 +20,8 @@ hPlot = plot(N,vb,'--bs',...
     'MarkerEdgeColor','r',...
     'MarkerFaceColor',[1,1,1])
 hXLabel = xlabel('N')
-hYLabel = ylabel('\DeltaV');
-hTitle  = title ('Título');
+hYLabel = ylabel('\DeltaV (km/s)');
+hTitle  = title ('Escrever Título');
 
 vbinf = Isp*g*(1-e)*log(1/pPL);
 text(N(end)-2, vbinf,strcat('v_{b\infty} =', {'  '}, num2str(vbinf), {' km/s'}),...
