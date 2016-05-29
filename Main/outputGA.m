@@ -33,8 +33,9 @@ function [state, options,optchanged] = outputGA(options,state,flag)
 %	See also PATTERNSEARCH, GA, GAOPTIMSET
 
 %   Copyright 2004-2006 The MathWorks, Inc.
-
 global PATH finalName
+
+
 nameFile =  strcat('POP_',finalName,'.txt');
 fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
 
@@ -48,9 +49,25 @@ best = state.Best;
 
 switch flag
     case 'init'
-        fprintf(fid,'********* Starting the algorithm *********\n');
+fn_structdisp(options)
+%fprintf(fid,t);
+        pop = options.PopulationSize; type = options.PopulationType;
+    
+    colheadings = {'Type','Pop'};
+    rowheadings = {' '};
+    fms = {'%s','%d'};
+    wid = 10;
+    data = [];
+    
+   % displaytable(data,colheadings,wid,fms,rowheadings,fid);
+    
+    
+        fprintf(fid,'\n********* Starting the algorithm *********\n');
+        fprintf(fid,'Population Size: %d\n', options.PopulationSize);
         
         fprintf(fid,'<------> Generation %d <------>\n',state.Generation);
+        
+        
         for i =1:size(pop,1),
             fprintf(fid,'[%03.f]: ',i);
             fprintf(fid,'%g ',pop(i,:));
@@ -73,4 +90,3 @@ switch flag
 end
 fclose(fid);
 end
-

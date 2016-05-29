@@ -9,7 +9,7 @@ clc
 global cut Mpay Udes DEBUG g0 Isp type test fileID finalName
 global PATH
 
-PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\rockag\Main\Data\';
+PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\Data\';
 test = struct('Nmin',1,'Nmax',6,...
               'Lmin',0.001, 'Lmax',0.2, ...
               'Emin',0.1,'Emax',1);
