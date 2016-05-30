@@ -112,13 +112,13 @@ fid = fopen(POP, 'at' );
     mE = Mvec - mp - Mpay;
  
     ch0 = {'AllB','MvB','dVB','CB'};
-    ch1 = {'FIT','DeltaVFit','MvecFit','CostFit','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
+    ch1 = {'FIT','dVFit','MvecFit','CFit','dVF [%]','MvF [%]','CF [%]','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
     ch2 = {'pPL [%]','Mpay [kg]','mf [kg]','mp [kg]','mE [kg]'};
     
     colheadings = [ch0 ch1 ch2];
     
     fms0 = {'d','d','d','d'};
-    fms1 = {'.2E','.2E','.2E','.2E','.2f','.4f','.4f','.4f','.2E','.4f'};
+    fms1 = {'.2E','.2E','.2E','.2E','.3f','.3f','.3f','.2f','.4f','.4f','.4f','.2E','.4f'};
     fms2 = {'.4f','.2E','.2E','.2E','.2E'};
     
     fms = [fms0 fms1 fms2];
@@ -129,10 +129,19 @@ fid = fopen(POP, 'at' );
     for i=1:size(colheadings,2),
         wid(i) = length(colheadings{1,i}) ; 
     end
-    wid(5) = wid(6); wid(7) = wid(6); wid(8) = wid(6); wid(11) = wid(10);wid(9) = wid(9)+3;
+    wid(7) = wid(7) + 1;
+    wid(5) = wid(7); wid(6) = wid(7); wid(8) = wid(7); wid(14) = wid(13);wid(12) = wid(12)+3;
+    
+    wid(end) = wid(end) + 1;
+    wid(end-1) = wid(end-1) + 1;
+    wid(end-2) = wid(end-2) + 1;
+    wid(end-3) = wid(end-3) + 1;
+    dVFp = 100*delVFit/FITNESS;
+    MvFp = 100*MvecFit/FITNESS;
+    CFp = 100*CostFit/FITNESS;
     
     data0 = [ALLbool MVECbool DELVbool COSTbool];
-    data1 = [FITNESS delVFit MvecFit CostFit N lambda e delV Mvec Cost];
+    data1 = [FITNESS delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
     data2 = [pPL*100 Mpay mf mp mE];
     data = [data0 data1 data2];
     

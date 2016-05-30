@@ -42,7 +42,7 @@ type = 'bitString'; % doubleVector
      num2str(Mpay));
 
  
-POP = strcat(fullfile(PATH, strcat('POP_',finalName,'.txt')))
+POP = strcat(fullfile(PATH, strcat('POP_',finalName,'.txt')));
 fid = fopen(POP, 'at' );
 
 
