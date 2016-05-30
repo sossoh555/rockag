@@ -7,11 +7,9 @@ clc
 set(0,'DefaultFigureWindowStyle','docked');
 
 global cut Mpay Udes DEBUG g0 Isp type test fileID finalName
-global PATH POP
+global PATH
 
 PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\Data\';
-
-
 test = struct('Nmin',1,'Nmax',6,...
               'Lmin',0.001, 'Lmax',0.2, ...
               'Emin',0.1,'Emax',1);
@@ -41,17 +39,11 @@ type = 'bitString'; % doubleVector
      num2str(Ngen),'-',...
      num2str(Mpay));
 
- 
-POP = strcat(fullfile(PATH, strcat('POP_',finalName,'.txt')))
-fid = fopen(POP, 'at' );
-
-
-
-
+ nameFile =  strcat('POP_',finalName,'.txt');
+fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
 
 fprintf(fid,'\n********* Starting the algorithm *********\n');
-fprintf(fid,'Population Size: %d\n', Npop);
-fprintf(fid,'Initial Population: \n');
+fprintf(fid,'Population Size: %d\n', options.PopulationSize);
         
         
 % 

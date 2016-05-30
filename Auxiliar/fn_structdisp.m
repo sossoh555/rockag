@@ -1,4 +1,4 @@
-function fn_structdisp(Xname)
+function fn_structdisp(Xname,fid)
 % function fn_structdisp Xname
 % function fn_structdisp(X)
 %---
@@ -23,7 +23,7 @@ else
 end
 
 if ~isstruct(X), error('argument should be a structure or the name of a structure'), end
-rec_structdisp(Xname,X)
+rec_structdisp(Xname,X,fid)
 
 %---------------------------------
 function rec_structdisp(Xname,X,fid)
@@ -41,8 +41,7 @@ CELLRECURSIVE = false;
 
 %----- PARAMETERS END -------%
 
-disp([Xname ':'])
-disp(X)
+if not(isstruct(X)) && not(isstruct(Xname)), fprintf(fid,'%s : %s \n', Xname,X); end
 %fprintf('\b')
 
 if isstruct(X) || isobject(X)
@@ -78,21 +77,21 @@ for i=1:nsub
     a = Y{i};
     if isstruct(a) || isobject(a)
         if length(a)==1
-            rec_structdisp(subnames{i},a)
+            rec_structdisp(subnames{i},a,fid)
         else
             for k=1:length(a)
-                rec_structdisp([subnames{i} '(' num2str(k) ')'],a(k))
+                rec_structdisp([subnames{i} '(' num2str(k) ')'],a(k),fid)
             end
         end
     elseif iscell(a)
         if size(a,1)<=CELLMAXROWS && size(a,2)<=CELLMAXCOLS && numel(a)<=CELLMAXELEMS
-            rec_structdisp(subnames{i},a)
+            rec_structdisp(subnames{i},a,fid)
         end
     elseif size(a,1)<=ARRAYMAXROWS && size(a,2)<=ARRAYMAXCOLS && numel(a)<=ARRAYMAXELEMS
-        fprintf(' %s :',subnames{i});
-        if size(a,2)~=0 && size(a,1)~=0, 
-            disp(a)
-            %fprintf('%g ',a(1,:));
+
+        if size(a,2)~=0 && size(a,1)~=0 && not(isa(a,'function_handle')), 
+        fprintf(fid,' %s :',subnames{i});
+            fprintf('%g \n',a(1,:));
         end
         
 

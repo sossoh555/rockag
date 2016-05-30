@@ -23,7 +23,7 @@ for i=1:size(e,2),
     hold on
 end
 U=g0*Isp*log((1+lBest)./(lBest+eBest));
-semilogx(lBest,U,'b*')
+semilogx(lBest,U,'bo')
 %legend('toggle')
 legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5')
  saveas(gcf, strcat(fullfile(PATH, finalName),'.fig'))

@@ -33,11 +33,12 @@ function [state, options,optchanged] = outputGA(options,state,flag)
 %	See also PATTERNSEARCH, GA, GAOPTIMSET
 
 %   Copyright 2004-2006 The MathWorks, Inc.
-global PATH finalName
+global POP
 
 
-nameFile =  strcat('POP_',finalName,'.txt');
-fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
+%nameFile =  strcat(POP,finalName,'.txt');
+%fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
+fid = fopen(POP, 'at' );
 
 optchanged = false;
 
@@ -49,44 +50,84 @@ best = state.Best;
 
 switch flag
     case 'init'
-fn_structdisp(options)
-%fprintf(fid,t);
-        pop = options.PopulationSize; type = options.PopulationType;
-    
-    colheadings = {'Type','Pop'};
-    rowheadings = {' '};
-    fms = {'%s','%d'};
-    wid = 10;
-    data = [];
-    
-   % displaytable(data,colheadings,wid,fms,rowheadings,fid);
-    
-    
-        fprintf(fid,'\n********* Starting the algorithm *********\n');
-        fprintf(fid,'Population Size: %d\n', options.PopulationSize);
+        %fprintf(fid,t);
+
         
-        fprintf(fid,'<------> Generation %d <------>\n',state.Generation);
-        
-        
-        for i =1:size(pop,1),
-            fprintf(fid,'[%03.f]: ',i);
-            fprintf(fid,'%g ',pop(i,:));
-            fprintf(fid,'%f',scores(i,1));
-            fprintf(fid,'\n');
+        %fprintf(fid, 'População Inicial\n')
+        %fprintf(fid,'<------> Generation %03d <------>\n',state.Generation);
+        pop = options.PopulationSize;
+        typeGA = options.PopulationType;
+        gen = options.Generations;
+        mutat = func2str(options.MutationFcn);
+        creat = func2str(options.CreationFcn);
+        fitnessScaling = func2str(options.FitnessScalingFcn);
+        selec = func2str(options.SelectionFcn);
+        cross = func2str(options.CrossoverFcn);
+        tolFun = options.TolFun;
+        tolCon = options.TolCon;
+        crossFraction = options.CrossoverFraction;
+        elite = options.EliteCount;
+        migDir = options.MigrationDirection;
+        migInt = options.MigrationInterval;
+        migFrac =options.MigrationFraction;
+        fncs = options.PlotFcns;
+        plotFcns = '';
+        for i =1:size(fncs,2),
+            plotFcns =  [plotFcns  sprintf(' %s ',func2str(fncs{i}))];
         end
+
+        
+        names = {'Type' 'Population Size' 'Mutation' 'Creation' 'Fitness Scaling' 'Selection' 'Crossover' 'PlotFunctions' 'TolFun' 'TolCon' 'Crossover Fraction' 'Elite Count' 'Migration Direction' 'Migration Interval' 'Migration Fraction'};
+        maxChars = 0;
+        for i=1:size(names,2)
+            ref = length(names{i});
+            if maxChars < ref, maxChars = ref;   end
+        end
+        
+        %data = {typeGA pop mutat creat fitnessScaling selec cross tolFun tolCon crossFraction elite migDir migInt migFrac};
+        
+        fprintf(fid,'Type: %s\n', typeGA);
+        fprintf(fid,'Population Size: %d\n',pop);
+        fprintf(fid,'Generations: %d\n',gen);
+        fprintf(fid,'Mutation: %s\n',mutat);
+        fprintf(fid,'Creation: %s\n',creat);
+        fprintf(fid,'Fitness Scaling: %s\n',fitnessScaling);
+        fprintf(fid,'Selection: %s\n',selec);
+        fprintf(fid,'Crossover: %s\n',cross);
+        fprintf(fid,'PlotFunctions: %s\n',plotFcns);
+        fprintf(fid,'Crossover Fraction: %.2f\n',crossFraction);
+        fprintf(fid,'TolFun: %.2E\n',tolFun);
+        fprintf(fid,'TolCon: %.2E\n',tolCon);
+        fprintf(fid,'Elite Count: %d\n',elite);
+        fprintf(fid,'Migration Direction: %s\n',migDir);
+        fprintf(fid,'Migration Interval: %d\n',migInt);
+        fprintf(fid,'Migration Fraction: %.3f\n\n\n',migFrac);
+        
+
+        
+        %fprintf(fid,'<------> Generation %03d <------>\n',state.Generation);
+        
+        
+%         for i =1:size(pop,1),
+%             fprintf(fid,'[%03.f]: ',i);
+%             fprintf(fid,'%g ',pop(i,:));
+%             fprintf(fid,'%f',scores(i,1));
+%             fprintf(fid,'\n');
+%         end
+        
     case {'iter','interrupt'}
         
         fprintf(fid,'Iterating ...');
-        fprintf(fid,'<------> Generation %d <------>\n',state.Generation);
+        fprintf(fid,'<------> Generation %03d <------>\n',state.Generation);
         for i =1:size(pop,1),
             fprintf(fid,'[%03.f]: ',i);
             fprintf(fid,'%g ',pop(i,:));
-            fprintf(fid,'%f',scores(i,1));
-            if scores(i,1) == best(end),  fprintf(fid,' [BEST] '); end
+            fprintf(fid,'| %f',scores(i,1));
+            if scores(i,1) == best(end),  fprintf(fid,' [BEST] |'); end
             fprintf(fid,'\n');
         end
+         fprintf(fid,'\n');
     case 'done'
         fprintf(fid,'Performing final task');
 end
-fclose(fid);
 end
