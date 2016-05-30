@@ -18,7 +18,7 @@ end
 switch flag
     case 'init'
         hold on;
-        set(gca,'xlim',[0,options.Generations]);
+        %set(gca,'xlim',[0,state.Generation + 5]);
   
         xlabel('Generation','interp','none');
         ylabel('Fitness value','interp','none');
@@ -30,7 +30,7 @@ switch flag
     case 'iter'
         best = min(state.Score);
         m    = meanf(state.Score);
-%        set(gca,'ylim',[1,1.5*best]);
+        %set(gca,'xlim',[0,state.Generation + 5]);
         plotBest = findobj(get(gca,'Children'),'Tag','gaplotbestf');
         plotMean = findobj(get(gca,'Children'),'Tag','gaplotmean');
         newX = [get(plotBest,'Xdata') state.Generation];

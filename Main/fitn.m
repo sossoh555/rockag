@@ -1,16 +1,10 @@
 function FITNESS = fitn(x)
 global cut Mpay g0 Isp Udes DEBUG type test POP
-ALLbool = false;
-MVECbool = true;
-DELVbool = true;
-COSTbool = true;
-
+global ALLbool MVECbool DELVbool COSTbool
+global W1 W2 W3
 
 A = 0.6:-0.1:0.1;
 B = 15:2:25;
-W1 = 1;
-W2 = 1E6;
-W3 = 4E2;
 Cost = 0;delV = 0;Mvec = 0; mf = 0; mp = 0; mE = 0; 
 CostFit = 0;delVFit = 0;MvecFit = 0;
 
@@ -96,6 +90,10 @@ end
 %=======================
 %        FITNESS
 %=======================
+% delVFit = delVFit*100;
+% MvecFit = MvecFit*100;
+% CostFit = CostFit*100;
+
 FITNESS = delVFit + MvecFit + CostFit;
 if FITNESS >1, FITNESS = 1; end
 
@@ -111,17 +109,15 @@ fid = fopen(POP, 'at' );
     mp = Mvec - mf;
     mE = Mvec - mp - Mpay;
  
-    ch0 = {'AllB','MvB','dVB','CB'};
     ch1 = {'FIT','dVFit','MvecFit','CFit','dVF [%]','MvF [%]','CF [%]','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
     ch2 = {'pPL [%]','Mpay [kg]','mf [kg]','mp [kg]','mE [kg]'};
     
-    colheadings = [ch0 ch1 ch2];
+    colheadings = [ch1 ch2];
     
-    fms0 = {'d','d','d','d'};
     fms1 = {'.2E','.2E','.2E','.2E','.3f','.3f','.3f','.2f','.4f','.4f','.4f','.2E','.4f'};
     fms2 = {'.4f','.2E','.2E','.2E','.2E'};
     
-    fms = [fms0 fms1 fms2];
+    fms = [fms1 fms2];
     
     rowheadings = {''};
     
@@ -129,8 +125,20 @@ fid = fopen(POP, 'at' );
     for i=1:size(colheadings,2),
         wid(i) = length(colheadings{1,i}) ; 
     end
-    wid(7) = wid(7) + 1;
-    wid(5) = wid(7); wid(6) = wid(7); wid(8) = wid(7); wid(14) = wid(13);wid(12) = wid(12)+3;
+    
+    [truefalse, index] = ismember('MvecFit', colheadings);
+    wid(index) = wid(index) + 1;
+    [truefalse, aux] = ismember('FIT', colheadings);wid(aux) = wid(index); 
+    [truefalse, aux] = ismember('dVFit', colheadings);wid(aux) = wid(index); 
+    [truefalse, aux] = ismember('CFit', colheadings);wid(aux) = wid(index); 
+    
+    [truefalse, index] = ismember('N', colheadings);
+    wid(index) = wid(index)+3;
+    
+    [truefalse, index] = ismember('lambda', colheadings);
+    [truefalse, aux] = ismember('e', colheadings);wid(aux) = wid(index); 
+    
+    
     
     wid(end) = wid(end) + 1;
     wid(end-1) = wid(end-1) + 1;
@@ -140,10 +148,10 @@ fid = fopen(POP, 'at' );
     MvFp = 100*MvecFit/FITNESS;
     CFp = 100*CostFit/FITNESS;
     
-    data0 = [ALLbool MVECbool DELVbool COSTbool];
+
     data1 = [FITNESS delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
     data2 = [pPL*100 Mpay mf mp mE];
-    data = [data0 data1 data2];
+    data = [data1 data2];
     
 
     displaytable(data,colheadings,wid,fms,rowheadings,fid);

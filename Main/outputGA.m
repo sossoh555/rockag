@@ -143,7 +143,7 @@ switch flag
               fprintf(fid,'%*g ',widp,aux); 
             end
             fprintf(fid,'\n');
-        fprintf(fid,'\n');
+        fprintf(fid,'\n');  
     case 'done'
         fprintf(fid,'Performing final task');
 end

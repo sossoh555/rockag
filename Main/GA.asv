@@ -6,21 +6,38 @@ close all
 clc
 set(0,'DefaultFigureWindowStyle','docked');
 
-global cut Mpay Udes DEBUG g0 Isp type test fileID finalName
-global PATH
+global cut Mpay Udes DEBUG g0 Isp type test finalName
+global PATH POP
+global ALLbool MVECbool DELVbool COSTbool
+global W1 W2 W3
 
 PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\Data\';
+
+
 test = struct('Nmin',1,'Nmax',6,...
-              'Lmin',0.001, 'Lmax',0.2, ...
-              'Emin',0.1,'Emax',1);
+    'Lmin',0.001, 'Lmax',0.2, ...
+    'Emin',0.1,'Emax',1);
+% fitness
+
+ALLbool = false;
+MVECbool = true;
+DELVbool = true;
+COSTbool = true;
+W1 = 1;
+W2 = 2E6;
+W3 = 4E2;
+
 
 DEBUG = false;
-Udes = 5.657;
+
+
+Udes = 35.657;
 Isp = 350;
 g0 = 9.81/1000;
-Mpay = 5000; %[kg]
-Npop = 10; % Tamanho da populacao
-Ngen = 10; % Numero de geracoes
+
+Mpay = 500; %[kg]
+Npop = 20; % Tamanho da populacao
+Ngen = 200; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.01; % 1 Percent
 
@@ -28,29 +45,8 @@ type = 'bitString'; % doubleVector
 %type = 'doubleVector';
 
 
-%=============================
-%            FILE
-%=============================
 
- DateString = strrep(datestr(datetime('now')),':','');
- finalName = strcat(DateString,...
-     '-',type,'-',...
-     num2str(Npop),'-',...
-     num2str(Ngen),'-',...
-     num2str(Mpay));
 
- nameFile =  strcat('POP_',finalName,'.txt');
-fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
-
-fprintf(fid,'\n********* Starting the algorithm *********\n');
-fprintf(fid,'Population Size: %d\n', options.PopulationSize);
-        
-        
-% 
-% fileID = fopen(finalName,'w');
-% 
-% 
-% fprintf(fileID,'%6s %12s\n','x','exp(x)');
 
 
 
@@ -65,9 +61,9 @@ if strcmp(type,'bitString'),
         pos = pos + var(i);
         cut(pos) = 1;
     end
-
+    
     %[ 5 10 ]
-%[ N Sigma]
+    %[ N Sigma]
     lb = [];
     ub = [];
 elseif strcmp(type,'doubleVector')
@@ -81,7 +77,59 @@ end
 
 
 
+%=============================
+%            FILE
+%=============================
 
+DateString = strrep(datestr(datetime('now')),':','');
+finalName = strcat(DateString,...
+    '-',type,'-',...
+    num2str(Npop),'-',...
+    num2str(Ngen),'-',...
+    num2str(Mpay));
+
+
+POP = strcat(fullfile(PATH, strcat('POP_',finalName,'.txt')));
+fid = fopen(POP, 'at' );
+
+fprintf(fid,'\n********* Starting the algorithm *********\n');
+
+ch0 = {'Nvars','Udes', 'Isp', 'Mpay','Npop', 'Ngen', 'Neli','MutatRate'};
+ch1 = {'ALLbool', 'MVECbool', 'DELVbool', 'W1', 'W2','W3'};
+ch2 = {'Nmin', 'Nmax', 'Lmin', 'Lmax', 'Emin', 'Emax'};
+
+colheadings = [ch0 ch1 ch2];
+
+fms0 = {'d','.2f','d','d','d','d','d','.2f'};
+fms1 = {'d','d','d','.2E','.2E','.2E'};
+fms2 = {'d','d','.2E','.2E','.2E','.2E'};
+
+fms = [fms0 fms1 fms2];
+
+rowheadings = {''};
+
+data0 = [Nvars Udes Isp Mpay Npop Ngen Neli mutationRate];
+data1 = [ALLbool MVECbool DELVbool W1 W2 W3];
+data2 = [test.Nmin test.Nmax test.Lmin test.Lmax test.Emin test.Emax];
+data = [data0 data1 data2];
+size(data)
+
+wid = ones(1,size(colheadings,2));
+for i=1:size(colheadings,2),
+    wid(i) = length(colheadings{1,i}) ;
+end
+[truefalse, index] = ismember('Udes', colheadings);
+wid(index) = wid(index) + 2;
+[truefalse, index] = ismember('W1', colheadings);
+wid(index) = wid(index) + 2;
+[truefalse, index] = ismember('W2', colheadings);
+wid(index) = wid(index) + 2;
+[truefalse, index] = ismember('W3', colheadings);
+wid(index) = wid(index) + 2;
+[truefalse, index] = ismember('W2', colheadings);
+wid(index) = wid(index) + 2;
+displaytable(data,colheadings,wid,fms,rowheadings,fid);
+fprintf(fid,'\n\n');
 
 
 
@@ -108,9 +156,9 @@ opts = gaoptimset(...
     'Generations', Ngen, ...
     'EliteCount', Neli, ...
     'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance,@gaplotscorediversity,@gaplotbestindiv,@gaplotrange},...
-    'CrossoverFcn', @crossovertwopoint,...
+    'CrossoverFcn', @crossoverscattered,...
     'FitnessScalingFcn', @fitscalingrank,...
-    'MutationFcn',{@mutationuniform, 0.01}, ...
+    'MutationFcn',{@mutationuniform, 0.05}, ...
     'SelectionFcn', @selectionroulette,...
     'StallGenLimit', 50, ...
     'FitnessScalingFcn',{@fitscalingtop,0.9},...
@@ -128,13 +176,13 @@ opts = gaoptimset(...
 %rng(0, 'twister');
 
 %================================
-%             GA        
+%             GA
 %================================
 [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
     lb, ub, [], [], opts);
 % print(strcat('ALLplots',finalName),'-depsc');
 %================================
-%           MULTI GA        
+%           MULTI GA
 %================================
 
 
@@ -158,12 +206,12 @@ opts = gaoptimset(...
 %%
 % We can also ask |ga| to return the optimal volume of the beam.
 %fprintf('\nCost function returned by ga = %g\n', fbest);
-%fprintf('%g ', xbest);
-fprintf('\n')
-fprintf('%%%%%%%%%%BEST INDIVIDUAL%%%%%%%%%%%\n\n')
-DEBUG = true;
-fitn(xbest);
-DEBUG = false;
+%fprintf('%g ', xbest);% fprintf('\n')
+% fprintf('%%%%%%%%%%BEST INDIVIDUAL%%%%%%%%%%%\n\n')
+% DEBUG = true;
+% fitn(xbest);
+% DEBUG = false;
+
 %delV = abs(g0*Isp*log((1+xbest(1))/(xbest(2) + xbest(1))));
 %fprintf('deltaV: %f \n\n', delV);
 
