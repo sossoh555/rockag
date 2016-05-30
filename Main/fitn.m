@@ -9,8 +9,8 @@ COSTbool = true;
 A = 0.6:-0.1:0.1;
 B = 15:2:25;
 W1 = 1;
-W2 = 1E8;
-W3 = 4E3;
+W2 = 1E6;
+W3 = 4E2;
 Cost = 0;delV = 0;Mvec = 0; mf = 0; mp = 0; mE = 0; 
 CostFit = 0;delVFit = 0;MvecFit = 0;
 
@@ -148,7 +148,7 @@ fid = fopen(POP, 'at' );
 
     displaytable(data,colheadings,wid,fms,rowheadings,fid);
     fprintf(fid,'\n');    
-    
+    fclose('all');
 
 
 

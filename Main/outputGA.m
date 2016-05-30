@@ -147,4 +147,5 @@ switch flag
     case 'done'
         fprintf(fid,'Performing final task');
 end
+fclose('all');
 end
