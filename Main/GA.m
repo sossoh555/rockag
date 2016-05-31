@@ -4,12 +4,13 @@ function GA
 clear all
 close all
 clc
-set(0,'DefaultFigureWindowStyle','docked');
+%set(0,'DefaultFigureWindowStyle','docked');
 
 global cut Mpay Udes DEBUG g0 Isp type test finalName
-global PATH POP
+global PATH POP fTEST scalingGain fGain
 global ALLbool MVECbool DELVbool COSTbool
-global W1 W2 W3
+global W
+global Fit P
 
 PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\Data\';
 
@@ -23,31 +24,27 @@ ALLbool = false;
 MVECbool = true;
 DELVbool = true;
 COSTbool = true;
-W1 = 1;
-W2 = 2E6;
-W3 = 4E2;
+W1 = 1;W2 = 1;W3 = 1;
+W = [W1 W2 W3] ;
+P1 = 0.1;P2 = 0.4; P3 = 0.5;
+P = [P1 P2 P3];
 
-
-DEBUG = false;
+DEBUG = true;
 
 
 Udes = 35.657;
 Isp = 350;
 g0 = 9.81/1000;
 
+Fit(3,1) = 0;
 Mpay = 500; %[kg]
-Npop = 20; % Tamanho da populacao
-Ngen = 200; % Numero de geracoes
+Npop = 10; % Tamanho da populacao
+Ngen = 10; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.01; % 1 Percent
 
 type = 'bitString'; % doubleVector
 %type = 'doubleVector';
-
-
-
-
-
 
 
 
@@ -90,6 +87,9 @@ finalName = strcat(DateString,...
 
 
 POP = strcat(fullfile(PATH, strcat('POP_',finalName,'.txt')));
+fTEST = strcat(fullfile(PATH, strcat('TEST_',finalName,'.txt')));
+fGain = strcat(fullfile(PATH, strcat('GAIN_',finalName,'.txt')));
+
 fid = fopen(POP, 'at' );
 
 fprintf(fid,'\n********* Starting the algorithm *********\n');
@@ -112,7 +112,6 @@ data0 = [Nvars Udes Isp Mpay Npop Ngen Neli mutationRate];
 data1 = [ALLbool MVECbool DELVbool W1 W2 W3];
 data2 = [test.Nmin test.Nmax test.Lmin test.Lmax test.Emin test.Emax];
 data = [data0 data1 data2];
-size(data)
 
 wid = ones(1,size(colheadings,2));
 for i=1:size(colheadings,2),
@@ -148,6 +147,27 @@ fprintf(fid,'\n\n');
 % Note that there are a restricted set of |ga| options available when
 % solving mixed integer problems - see Global Optimization Toolbox User's
 % Guide for more details.
+optsINICIAL = gaoptimset(...
+    'PopulationType',type, ...
+    'Display','diagnose',...
+    'PopulationSize', 70, ...
+    'Generations', 2, ...
+    'EliteCount', 1, ...
+    'CrossoverFcn', @crossoverscattered,...
+    'FitnessScalingFcn', @fitscalingrank,...
+    'MutationFcn',{@mutationuniform, 0.05}, ...
+    'SelectionFcn', @selectionroulette,...
+    'StallGenLimit', 50, ...
+    'FitnessScalingFcn',{@fitscalingtop,0.9},...
+    'OutputFcn',@outputGA);
+scalingGain = true;
+[xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
+    lb, ub, [], [], optsINICIAL);
+fid = fopen(fGain, 'at' );
+fprintf(fid, '\nWFINAL = ');
+fprintf(fid, '%f ',W(:));
+fprintf(fid,'\n');
+scalingGain = false;
 
 opts = gaoptimset(...
     'PopulationType',type, ...

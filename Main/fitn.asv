@@ -1,11 +1,12 @@
 function FITNESS = fitn(x)
 global cut Mpay g0 Isp Udes DEBUG type test POP
-global ALLbool MVECbool DELVbool COSTbool
-global W1 W2 W3
+global ALLbool MVECbool DELVbool COSTbool scalingGain fGain
+global W
+global Fit
 
 A = 0.6:-0.1:0.1;
 B = 15:2:25;
-Cost = 0;delV = 0;Mvec = 0; mf = 0; mp = 0; mE = 0; 
+Cost = 0;delV = 0;Mvec = 0; mf = 0; mp = 0; mE = 0;
 CostFit = 0;delVFit = 0;MvecFit = 0;
 
 if strcmp(type,'bitString'),
@@ -33,21 +34,21 @@ end
 %Important Considerations
 %=======================
 pPL = lambda/(1+lambda);
-    
-    
+
+
 %=======================
 %          U
 %=======================
 
 if DELVbool || ALLbool,
-   % U = log(((1+lambda)/(e + lambda))^N);
-   %delV = g0*Isp*U;
+    % U = log(((1+lambda)/(e + lambda))^N);
+    %delV = g0*Isp*U;
     
     num = (pPL^(1/N))*(1-e) + e;
     U = log(1/num);
     delV = U*Isp*g0*N;
     
-    delVFit = abs((Udes - delV)/Udes/W1);
+    delVFit = abs(W(1)*(Udes - delV)/Udes);
 end
 
 
@@ -62,7 +63,7 @@ if MVECbool || ALLbool,
     num = (pPL^(1/N))*(1-e) + e;
     n = (1/num)^N;
     Mvec = mf*n;
-    MvecFit = Mvec/W2;
+    MvecFit = Mvec*W(2);
 end
 
 %Nmax = round(N);
@@ -83,7 +84,7 @@ if COSTbool || ALLbool,
     for i=1:Nr,
         Cost = Cost + Nr*(1 + A(Nr)*exp(-((0.025*B(Nr))/(lambda-lambda*e+e))^3.5));
     end
-    CostFit = Cost/W3;
+    CostFit = Cost*W(3);
 end
 
 
@@ -93,22 +94,33 @@ end
 % delVFit = delVFit*100;
 % MvecFit = MvecFit*100;
 % CostFit = CostFit*100;
+dir = size(Fit,2);
+%fprintf('Dir: %d\n', dir)
+
+Fit(1,dir+1) = delVFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
+Fit(2,dir+1) = MvecFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
+Fit(3,dir+1) = CostFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
+
 
 FITNESS = delVFit + MvecFit + CostFit;
-if FITNESS >1, FITNESS = 1; end
+%if FITNESS >1, FITNESS = 1; end
 
 if DEBUG == false
-%nameFile =  strcat(POP,finalName,'.txt');
-%fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
-fid = fopen(POP, 'at' );
-
-            fprintf(fid,'%g ',x(:));
-            fprintf(fid,'| %f',FITNESS);
-            fprintf(fid,'\n');
+    %nameFile =  strcat(POP,finalName,'.txt');
+    %fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
+    if scalingGain,
+        fid = fopen(fGain, 'at' );
+    else
+        fid = fopen(POP, 'at' );
+    end
+    
+    fprintf(fid,'%g ',x(:));
+    fprintf(fid,'| %f',FITNESS);
+    fprintf(fid,'\n');
     %%%%%%%%%%%%%%%% INFORMACOES DO AG %%%%%%%%%%%%%%%%%%%%%%%
     mp = Mvec - mf;
     mE = Mvec - mp - Mpay;
- 
+    
     ch1 = {'FIT','dVFit','MvecFit','CFit','dVF [%]','MvF [%]','CF [%]','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
     ch2 = {'pPL [%]','Mpay [kg]','mf [kg]','mp [kg]','mE [kg]'};
     
@@ -123,21 +135,20 @@ fid = fopen(POP, 'at' );
     
     wid = ones(1,size(colheadings,2));
     for i=1:size(colheadings,2),
-        wid(i) = length(colheadings{1,i}) ; 
+        wid(i) = length(colheadings{1,i}) ;
     end
     
     [truefalse, index] = ismember('MvecFit', colheadings);
     wid(index) = wid(index) + 1;
-    [truefalse, aux] = ismember('FIT', colheadings);wid(aux) = wid(index); 
-    [truefalse, aux] = ismember('dVFit', colheadings);wid(aux) = wid(index); 
-    [truefalse, aux] = ismember('CFit', colheadings);wid(aux) = wid(index); 
+    [truefalse, aux] = ismember('FIT', colheadings);wid(aux) = wid(index);
+    [truefalse, aux] = ismember('dVFit', colheadings);wid(aux) = wid(index);
+    [truefalse, aux] = ismember('CFit', colheadings);wid(aux) = wid(index);
     
     [truefalse, index] = ismember('N', colheadings);
     wid(index) = wid(index)+3;
     
-    [truefalse, index] = ismember('e', colheadings);
-    [truefalse, aux] = ismember('lambda', colheadings);wid(aux) = wid(index); 
-    wid(index) = wid(aux);
+    [truefalse, index] = ismember('lambda', colheadings);
+    [truefalse, aux] = ismember('e', colheadings);wid(aux) = wid(index);
     
     
     
@@ -149,18 +160,18 @@ fid = fopen(POP, 'at' );
     MvFp = 100*MvecFit/FITNESS;
     CFp = 100*CostFit/FITNESS;
     
-
+    
     data1 = [FITNESS delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
     data2 = [pPL*100 Mpay mf mp mE];
     data = [data1 data2];
     
-
+    
     displaytable(data,colheadings,wid,fms,rowheadings,fid);
-    fprintf(fid,'\n');    
+    fprintf(fid,'\n');
     fclose('all');
-
-
-
+    
+    
+    
     
     
     
