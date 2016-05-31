@@ -1,5 +1,6 @@
 function plotN(x, flag)
 global g0 Isp cut test type out finalName PATH
+global hMarks
 
 switch flag
     case 'init'
@@ -9,11 +10,11 @@ switch flag
         figure('Name','plotN','NumberTitle','off')
         for i=1:size(e,2),
             U=g0*Isp*log((1+l)./(l+e(i)));
-            semilogx(l,U)
+            dataPlotN = semilogx(l,U);
             hold on
         end
-        
-        
+        hMarks=[];
+        legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5')
         
     case {'iter','interrupt'}
         
@@ -30,11 +31,21 @@ switch flag
             lBest = x(2);
         end
         U=g0*Isp*log((1+lBest)./(lBest+eBest));
+        
         f = findobj('name','plotN');
         set(0, 'currentfigure', f);
         hold on
-        semilogx(lBest,U,'bo')
-        legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5')
+        set(hMarks,'Color','r','LineWidth',1, 'Marker','o','MarkerSize',5);
+        
+        hMarks = [hMarks semilogx(lBest,U,'kx', 'LineWidth',3,'MarkerSize',9)];
+        
+        drawnow
+        
+%         newX = [get(dataPlotN,'Xdata') lBest];
+%         newY = [get(dataPlotN,'Ydata') U];
+%         set(dataPlotN,'Xdata',newX, 'Ydata',newY);
+%         semilogx(lBest,U,'bo')
+
         hold off
         
         

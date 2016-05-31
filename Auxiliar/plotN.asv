@@ -6,6 +6,17 @@ switch flag
         e = [0.001 0.01 0.05 0.1 0.2 0.5];
         l = 0.0001:0.0001:1;
         
+        figure('Name','plotN','NumberTitle','off')
+        for i=1:size(e,2),
+            U=g0*Isp*log((1+l)./(l+e(i)));
+            dataPlotN = semilogx(l,U)
+            hold on
+        end
+        
+        
+        
+    case {'iter','interrupt'}
+        
         if strcmp(type,'bitString'),
             
             out = divVec(x,cut);
@@ -18,24 +29,15 @@ switch flag
             eBest = x(3);
             lBest = x(2);
         end
-        
-        figure('Name','plotN','NumberTitle','off')
-        for i=1:size(e,2),
-            U=g0*Isp*log((1+l)./(l+e(i)));
-            semilogx(l,U)
-            hold on
-        end
         U=g0*Isp*log((1+lBest)./(lBest+eBest));
-        semilogx(lBest,U,'bo')
-        %legend('toggle')
-        legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5')
-        
-    case {'iter','interrupt'}
-        f = findobj('name','Algo');
+        f = findobj('name','plotN');
         set(0, 'currentfigure', f);
         hold on
-        semilogx(2,5,'bo')
+        semilogx(lBest,U,'bo')
+        legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5')
         hold off
+        
+        
     case 'done'
         
         saveas(gcf, strcat(fullfile(PATH, finalName),'.fig'))
