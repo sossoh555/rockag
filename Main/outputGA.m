@@ -37,6 +37,7 @@ global POP fTEST
 global Fit P W  scalingGain fGain
 
 
+
 %nameFile =  strcat(POP,finalName,'.txt');
 %fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
    if scalingGain,
@@ -51,10 +52,13 @@ pop = state.Population;
 scores = state.Score;
 best = state.Best;
 
-
-
+if ~scalingGain,
+[~,i] = min(state.Score);
+plotN(state.Population(i,:),flag);
+end
 switch flag
     case 'init'
+        
         %fprintf(fid,t);
         Fit(:) = 0;
         
@@ -209,7 +213,6 @@ switch flag
         
        clearvars -global Fit;
         Fit(3,1) = 0;
-        W
     case 'done'
         
         fprintf(fid,'Performing final task');

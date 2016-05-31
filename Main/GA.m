@@ -4,7 +4,7 @@ function GA
 clear all
 close all
 clc
-%set(0,'DefaultFigureWindowStyle','docked');
+set(0,'DefaultFigureWindowStyle','normal');
 
 global cut Mpay Udes DEBUG g0 Isp type test finalName
 global PATH POP fTEST scalingGain fGain
@@ -38,8 +38,8 @@ g0 = 9.81/1000;
 
 Fit(3,1) = 0;
 Mpay = 500; %[kg]
-Npop = 10; % Tamanho da populacao
-Ngen = 10; % Numero de geracoes
+Npop = 70; % Tamanho da populacao
+Ngen = 100; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.01; % 1 Percent
 
@@ -235,7 +235,7 @@ opts = gaoptimset(...
 %delV = abs(g0*Isp*log((1+xbest(1))/(xbest(2) + xbest(1))));
 %fprintf('deltaV: %f \n\n', delV);
 
-plotN(xbest);
+plotN(xbest,exitflag);
 
 fclose('all');
 
