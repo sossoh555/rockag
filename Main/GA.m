@@ -29,6 +29,10 @@ W = [W1 W2 W3] ;
 P1 = 0.5;P2 = 0.5; P3 = 0;
 P = [P1 P2 P3];
 
+if sum(P) ~= 1,
+   error('P deve ser igual a 1'); 
+end
+
 DEBUG = true;
 
 
@@ -37,11 +41,18 @@ Isp = 350;
 g0 = 9.81/1000;
 
 Fit(3,1) = 0;
-Mpay = 5000; %[kg]
+Mpay = 10000; %[kg]
 Npop = 70; % Tamanho da populacao
-Ngen = 50; % Numero de geracoes
+Ngen = 100; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
+
+nW = 20;
+Wbool = true;
+
+if ~Wbool,
+    nW = 1;
+end
 
 type = 'bitString'; % doubleVector
 %type = 'doubleVector';
@@ -88,7 +99,7 @@ finalName = strcat(DateString,...
 POP = strcat(fullfile(PATH, strcat('POP_',finalName,'.txt')));
 fTEST = strcat(fullfile(PATH, strcat('TEST_',finalName,'.txt')));
 fGain = strcat(fullfile(PATH, strcat('GAIN_',finalName,'.txt')));
-
+fExcel = strcat(fullfile(PATH, strcat('excelW_',finalName,'.xls')));
 
 
 %%
@@ -108,7 +119,6 @@ fGain = strcat(fullfile(PATH, strcat('GAIN_',finalName,'.txt')));
 % Guide for more details.
 optsINICIAL = gaoptimset(...
     'PopulationType',type, ...
-    'Display','diagnose',...
     'PopulationSize', 70, ...
     'Generations', 2, ...
     'EliteCount', 1, ...
@@ -121,12 +131,36 @@ optsINICIAL = gaoptimset(...
     'OutputFcn',@outputGA);
 
 scalingGain = true;
-[xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
-    lb, ub, [], [], optsINICIAL);
-fid = fopen(fGain, 'at' );
-fprintf(fid, '\nWFINAL = ');
-fprintf(fid, '%f ',W(:));
-fprintf(fid,'\n');
+Wcheck =[];
+for j =1:nW;
+    [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
+        lb, ub, [], [], optsINICIAL);
+    if ~Wbool, 
+    fid = fopen(fGain, 'at' );
+    fprintf(fid, '\nWFINAL = ');
+    fprintf(fid, '%f ',W(:));
+    fprintf(fid,'\n');
+    end
+    
+    if Wbool,
+        Wcheck = [Wcheck;W];
+        disp(W)
+        W(:) = 1;
+    end 
+end
+if Wbool,
+    for p=1:size(Wcheck,2),
+    W(p) = mean(Wcheck(:,p));    
+    end
+   Wcheck = [Wcheck;W] 
+   
+  xlswrite(fExcel,Wcheck);
+  %a = {1,nW+1,'=sum(a1,a2)'}
+  %a(2,:) = {2,nW+1,sprintf('=TEXTO(MÉDIA(B1:B%d);"0,00E+00") & " +-" & TEXTO(DESVPAD.A(B1:B%d);"0,00E+00")',nW)} 
+  %a(3,:) = {3,nW+1,sprintf('=TEXTO(MÉDIA(C1:C%d);"0,00E+00") & " +-" & TEXTO(DESVPAD.A(C1:C%d);"0,00E+00")',nW)} 
+  %xlswrite(fExcel,a);
+end
+
 scalingGain = false;
 
 
@@ -161,14 +195,16 @@ end
 [truefalse, index] = ismember('Udes', colheadings);
 wid(index) = wid(index) + 2;
 [truefalse, index] = ismember('W1', colheadings);
-wid(index) = wid(index) + 6;
+wid(index) = wid(index) + 8;
 [truefalse, index] = ismember('W2', colheadings);
-wid(index) = wid(index) + 6;
+wid(index) = wid(index) + 8;
 [truefalse, index] = ismember('W3', colheadings);
-wid(index) = wid(index) + 6;
+wid(index) = wid(index) + 8;
 [truefalse, index] = ismember('Lmin', colheadings);
 wid(index) = wid(index) + 2;
+
 displaytable(data,colheadings,wid,fms,rowheadings,fid);
+
 fprintf(fid,'\n\n');
 
 
@@ -240,10 +276,14 @@ opts = gaoptimset(...
 %delV = abs(g0*Isp*log((1+xbest(1))/(xbest(2) + xbest(1))));
 %fprintf('deltaV: %f \n\n', delV);
 
-plotN(xbest,exitflag);
+%plotN(xbest,exitflag);
+
+fid = fopen(POP, 'at' );
+fprintf(fid, 'BEST: \n');
+fitn(xbest);
 
 fclose('all');
-
+salvarImagens();
 %fclose(fileID);
 %analyzeBestVec(xbest)
 
@@ -291,3 +331,14 @@ fprintf('Vehicle Mass: %f \n',Mvec)
 fprintf('Vehicle Mass Pat: %f \n',Mvec/W2)
 
 end
+
+function salvarImagens()
+global PATH finalName
+h = get(0,'children');
+
+for i=1:length(h)
+    name = get(h(i),'name');
+    saveas(h(i), strcat(fullfile(PATH, strcat(name,'_',finalName))), 'fig');
+end
+end
+

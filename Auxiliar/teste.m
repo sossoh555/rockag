@@ -21,11 +21,11 @@ hPlot = plot(N,vb,'--bs',...
     'MarkerFaceColor',[1,1,1])
 hXLabel = xlabel('N')
 hYLabel = ylabel('\DeltaV (km/s)');
-hTitle  = title ('Escrever Título');
+hTitle  = title ('Velocidade de Burnout vs Número de Estágios');
 
 vbinf = Isp*g*(1-e)*log(1/pPL);
-text(N(end)-2, vbinf,strcat('v_{b\infty} =', {'  '}, num2str(vbinf), {' km/s'}),...
-    'VerticalAlignment','bottom')
+text(N(end)-3, vbinf,strcat('v_{b\infty} =', {'  '}, num2str(vbinf), {' km/s'}),...
+    'VerticalAlignment','bottom', 'FontSize',14)
 
 vbinf(1:1:size(N,2)+1) = vbinf;
 hLimit = line([0 N],vbinf);
@@ -47,9 +47,9 @@ end
 
 set(gca,'FontName','Helvetica');
 set([hTitle, hXLabel, hYLabel],'FontName','AvantGarde');
-set(hText,'FontName','AvantGarde','FontSize',11);
-set([hXLabel, hYLabel],'FontSize',10);
-set(hTitle,'FontSize', 12,'FontWeight','bold');
+set(hText,'FontName','AvantGarde','FontSize',14);
+set([hXLabel, hYLabel],'FontSize',14);
+set(hTitle,'FontSize', 14,'FontWeight','bold');
 set(gca,'XTick', 0:1:N(end)+ 1);
 
 set(gca, ...

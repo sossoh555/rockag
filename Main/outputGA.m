@@ -40,11 +40,11 @@ global Fit P W  scalingGain fGain
 
 %nameFile =  strcat(POP,finalName,'.txt');
 %fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
-   if scalingGain,
-        fid = fopen(fGain, 'at' );
-    else
-        fid = fopen(POP, 'at' );
-    end
+if scalingGain,
+    fid = fopen(fGain, 'at' );
+else
+    fid = fopen(POP, 'at' );
+end
 
 optchanged = false;
 
@@ -52,13 +52,13 @@ pop = state.Population;
 scores = state.Score;
 best = state.Best;
 
-if ~scalingGain,
-[~,i] = min(state.Score);
-plotN(state.Population(i,:),flag);
-end
+
 switch flag
     case 'init'
-        
+        if ~scalingGain,
+            [~,i] = min(state.Score);
+            plotN(state.Population(i,:),flag);
+        end
         %fprintf(fid,t);
         Fit(:) = 0;
         
@@ -127,6 +127,13 @@ switch flag
         Fit(3,1) = 0;
         
     case {'iter','interrupt'}
+        
+        if ~scalingGain && state.LastImprovement == state.Generation,
+            [~,i] = min(state.Score);
+            plotN(state.Population(i,:),flag);
+            
+        end
+        % fprintf('last improv: %d (now at %d)\n', state.LastImprovement,state.Generation)
         widp = 3;
         fprintf(fid,'Iterating ...');
         fprintf(fid,'<------> Generation %03d <------>\n',state.Generation);
@@ -157,64 +164,67 @@ switch flag
         fprintf(fid,'\n');
         
         % Arrumaaaaaaaaaaaaar pesos
-        % 
-          
-           if scalingGain,
-        fid = fopen(fGain, 'at' );
-    else
-        fid = fopen(fTEST, 'at' );
-    end
+        %
+        
+        if scalingGain,
+            fid = fopen(fGain, 'at' );
+        else
+            fid = fopen(fTEST, 'at' );
+        end
         FitAvg = zeros(1,3);
         
         if state.Generation == 1 && scalingGain,
             
-        
-               
-        FitAvg(1) = sum(Fit(1,1:end))/options.PopulationSize;
-        FitAvg(2) = sum(Fit(2,1:end))/options.PopulationSize;
-        FitAvg(3) = sum(Fit(3,1:end))/options.PopulationSize;
-        for i=1:size(FitAvg,2),
-        fprintf(fid, 'Fit%d: %f\n',i,FitAvg(i));           
-        end
-        
-        C = sum(FitAvg);
-        fprintf(fid, 'C: %f\n',C);
-        count = 0;
-        aux = 0;
-        for i=1:size(FitAvg,2),
-            fprintf(fid, 'W%d_inicial: %f\n',i,W(i));
-            for j=1:count,
-                aux = aux + FitAvg(j)*W(j);
-            end
-            fprintf(fid, 'aux: %f\n',aux);
-            W(i) = (sum(P(1:(count+1)))*C - aux)/FitAvg(i);
-            fprintf(fid, 'W%d_final: %f\n',i,W(i));
-            count = count + 1;
-            aux = 0;
             
-        end
- 
-        fprintf(fid, 'Geração: %d\n',state.Generation);
-        for i=1:size(W,2),
-        fprintf(fid,'W%d: %f\n',i,W(i));
-        end
-        fprintf(fid,'\n');
+            
+            FitAvg(1) = sum(Fit(1,1:end))/options.PopulationSize;
+            FitAvg(2) = sum(Fit(2,1:end))/options.PopulationSize;
+            FitAvg(3) = sum(Fit(3,1:end))/options.PopulationSize;
+            for i=1:size(FitAvg,2),
+                fprintf(fid, 'Fit%d: %f\n',i,FitAvg(i));
+            end
+            
+            C = sum(FitAvg);
+            fprintf(fid, 'C: %f\n',C);
+            count = 0;
+            aux = 0;
+            for i=1:size(FitAvg,2),
+                fprintf(fid, 'W%d_inicial: %f\n',i,W(i));
+                for j=1:count,
+                    aux = aux + FitAvg(j)*W(j);
+                end
+                fprintf(fid, 'aux: %f\n',aux);
+                W(i) = (sum(P(1:(count+1)))*C - aux)/FitAvg(i);
+                fprintf(fid, 'W%d_final: %f\n',i,W(i));
+                count = count + 1;
+                aux = 0;
+                
+            end
+            
+            fprintf(fid, 'Geração: %d\n',state.Generation);
+            for i=1:size(W,2),
+                fprintf(fid,'W%d: %f\n',i,W(i));
+            end
+            fprintf(fid,'\n');
         else
             fprintf(fid, 'Geração: %d\n',state.Generation);
             
             for i=1:size(FitAvg,2),
-            fprintf(fid,'Fit #%d\n',i);
-           
-            fprintf(fid, 'Min: %.3E\n',min(Fit(i,2:end)));    
-            fprintf(fid, 'Max: %.3E\n',max(Fit(i,2:end)));    
+                fprintf(fid,'Fit #%d\n',i);
+                
+                fprintf(fid, 'Min: %.3E\n',min(Fit(i,2:end)));
+                fprintf(fid, 'Max: %.3E\n',max(Fit(i,2:end)));
             end
-
+            
         end
         
-       clearvars -global Fit;
+        clearvars -global Fit;
         Fit(3,1) = 0;
     case 'done'
-        
+        if ~scalingGain,
+            [~,i] = min(state.Score);
+            plotN(state.Population(i,:),flag);
+        end
         fprintf(fid,'Performing final task');
 end
 fclose('all');

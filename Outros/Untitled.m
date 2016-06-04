@@ -4,9 +4,12 @@ clc
 
 x = 1:0.1:5;
 y = x.^2;
-figure('Name','Algo','NumberTitle','off','GraphicsSmoothing', 'on')
-dataPlotN = plot(x,y);
+z = x+4;
+figure('Name','Algo','NumberTitle','off')
+plot(x,y); hold on
+plot(x,z,'bx');
 
+mx = findobj(get(gca,'Children'),'Marker','x')
 
 for i=1:10,
 
@@ -17,17 +20,31 @@ for i=1:10,
 
 f = findobj('name','Algo');
 set(0, 'currentfigure', f);
-hold on
-h(i) = plot(3,i,'bx','Color',[0,0,0])
 
+
+
+hold on
+%h(i) = plot(3,i,'bx','Color',[0,0,0]);
 
 
  %newX = [get(dataPlotN,'Xdata') 1];
  %newY = [get(dataPlotN,'Ydata') 4];
  %semilogx(newX,newY)
 end
-g = findobj('type','line')
- %set(dataPlotN,'Xdata',newX, 'Ydata',newY);
+
+axesO = get(gca,'children')
+newX = [get(mx,'Xdata') 7];
+newY = [get(mx, 'Ydata') 30];
+set(mx, 'Xdata',newX, 'Ydata', newY)
+
+if axesO(1).Marker == '-',
+    disp('EH PORRA')
+else
+    disp('NAO EH PORRA')
+end
+
+
+%set(dataPlotN,'Xdata',newX, 'Ydata',newY);
 
 %    best = min(state.Score);
 %         m    = meanf(state.Score);

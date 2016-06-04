@@ -2,6 +2,7 @@ function plotN(x, flag)
 global g0 Isp cut test type out finalName PATH
 global hMarks
 
+fprintf('flag: %s\n',flag)
 switch flag
     case 'init'
         e = [0.001 0.01 0.05 0.1 0.2 0.5];
@@ -14,7 +15,10 @@ switch flag
             hold on
         end
         hMarks=[];
-        legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5')
+        title('Burnout Speed vs Payload Ratio');
+        xlabel('Payload Ratio \lambda');
+        ylabel('Burnout Velocity [km/s]');
+        
         
     case {'iter','interrupt'}
         
@@ -35,22 +39,57 @@ switch flag
         f = findobj('name','plotN');
         set(0, 'currentfigure', f);
         hold on
-        set(hMarks,'Color','r','LineWidth',1, 'Marker','o','MarkerSize',5);
         
-        hMarks = [hMarks semilogx(lBest,U,'kx', 'LineWidth',3,'MarkerSize',9)];
+        
+        axesO = get(gca,'children');
+        if isempty(findobj('Marker','x'))
+            semilogx(lBest,U,'kx', 'LineWidth',3,'MarkerSize',9);
+        else
+            if isempty(findobj('Marker','o'))
+                plotBest = findobj(get(gca,'Children'),'Marker','x');
+                newX = [get(plotBest,'Xdata')];
+                newY = [get(plotBest,'Ydata')];
+                semilogx(newX,newY,'ro', 'LineWidth',1,'MarkerSize',5);
+                chH = get(gca,'Children');
+                if chH(2).Marker == 'x'
+                    set(gca,'Children',[chH(2);chH(1); chH(3:end)])
+                    legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5','Previous Best','Current Best');
+                end
+            else
+                plotBest = findobj(get(gca,'Children'),'Marker','x');
+                plotOld = findobj(get(gca,'Children'),'Marker','o');
+                newX = [get(plotOld,'Xdata') get(plotBest,'Xdata')];
+                newY = [get(plotOld, 'Ydata') get(plotBest,'Ydata')];
+                set(plotOld, 'Xdata',newX, 'Ydata', newY);
+                
+            end
+            plotBest = findobj(get(gca,'Children'),'Marker','x');
+            newX = [lBest];
+            newY = [U];
+            set(plotBest, 'Xdata',newX, 'Ydata', newY);
+            %set(hMarks,'Color','r','LineWidth',1, 'Marker','o','MarkerSize',5);
+            
+            
+            
+            %hMarks = [hMarks semilogx(lBest,U,'kx', 'LineWidth',3,'MarkerSize',9)];
+            
+        end
+        
         
         drawnow
         
-%         newX = [get(dataPlotN,'Xdata') lBest];
-%         newY = [get(dataPlotN,'Ydata') U];
-%         set(dataPlotN,'Xdata',newX, 'Ydata',newY);
-%         semilogx(lBest,U,'bo')
-
-        hold off
         
+        %         newX = [get(dataPlotN,'Xdata') lBest];
+        %         newY = [get(dataPlotN,'Ydata') U];
+        %         set(dataPlotN,'Xdata',newX, 'Ydata',newY);
+        %         semilogx(lBest,U,'bo')
         
     case 'done'
+       % f = findobj('name','plotN');
+       % set(0, 'currentfigure', f);
+       % legend('e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5','Previous Best','Current Best');
+       % drawnow
         
-        saveas(gcf, strcat(fullfile(PATH, finalName),'.fig'))
+        %saveas(gcf, strcat(fullfile(PATH, finalName),'.fig'))
 end
 end

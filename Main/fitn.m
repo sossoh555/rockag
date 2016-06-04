@@ -37,7 +37,7 @@ pPL = lambda/(1+lambda);
 
 
 %=======================
-%          U
+%          delV
 %=======================
 
 if DELVbool || ALLbool,
@@ -47,6 +47,8 @@ if DELVbool || ALLbool,
     num = (pPL^(1/N))*(1-e) + e;
     U = log(1/num);
     delV = U*Isp*g0*N;
+    %num = e*((1/pPL)^(1/N)) + (1-e);
+    %delV = Isp*g0*N*((1/pPL)^(1/N))/num;
     
     delVFit = abs(W(1)*(Udes - delV)/Udes);
 end
@@ -139,7 +141,7 @@ if DEBUG,
     end
     
     [truefalse, index] = ismember('MvecFit', colheadings);
-    wid(index) = wid(index) + 1;
+    wid(index) = wid(index) + 3;
     [truefalse, aux] = ismember('FIT', colheadings);wid(aux) = wid(index);
     [truefalse, aux] = ismember('dVFit', colheadings);wid(aux) = wid(index);
     [truefalse, aux] = ismember('CFit', colheadings);wid(aux) = wid(index);
