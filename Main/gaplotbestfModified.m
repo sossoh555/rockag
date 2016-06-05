@@ -20,13 +20,13 @@ switch flag
         hold on;
         %set(gca,'xlim',[0,state.Generation + 5]);
   
-        xlabel('Generation','interp','none');
-        ylabel('Fitness value','interp','none');
+        xlabel('Geração','interp','none');
+        ylabel('Valor do Fitness','interp','none');
         plotBest = plot(state.Generation,min(state.Score),'.k');
         set(plotBest,'Tag','gaplotbestf');
         plotMean = plot(state.Generation,meanf(state.Score),'.b');
         set(plotMean,'Tag','gaplotmean');
-        title(['Best: ',' Mean: '],'interp','none')
+        title(['Melhor: ',' Média: '],'interp','none')
     case 'iter'
         best = min(state.Score);
         m    = meanf(state.Score);
@@ -38,9 +38,9 @@ switch flag
         set(plotBest,'Xdata',newX, 'Ydata',newY);
         newY = [get(plotMean,'Ydata') m];
         set(plotMean,'Xdata',newX, 'Ydata',newY);
-        set(get(gca,'Title'),'String',sprintf('Best: %g Mean: %g',best,m));
+        set(get(gca,'Title'),'String',sprintf('Melhor: %g Média: %g',best,m));
     case 'done'
-        LegnD = legend('Best fitness','Mean fitness');
+        LegnD = legend('Melhor Fitness','Fitness Médio');
         set(LegnD,'FontSize',8);
         hold off;
 end

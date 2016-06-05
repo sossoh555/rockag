@@ -154,7 +154,7 @@ switch flag
             if scores(i,1) == best(end),  fprintf(fid,' [BEST] |'); end
             fprintf(fid,'\n');
         end
-        fprintf(fid,'[XXX]: ');
+        fprintf(fid,'[DIV]: ');
         for k =1:size(div,2),
             aux = div(1,k);
             

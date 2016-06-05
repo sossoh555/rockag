@@ -16,7 +16,7 @@ PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\Data\';
 
 
 test = struct('Nmin',1,'Nmax',6,...
-    'Lmin',0.001, 'Lmax',0.1, ...
+    'Lmin',0.001, 'Lmax',0.3, ...
     'Emin',0.1,'Emax',1);
 % fitness
 
@@ -26,7 +26,7 @@ DELVbool = true;
 COSTbool = true;
 W1 = 1;W2 = 1;W3 = 1;
 W = [W1 W2 W3] ;
-P1 = 0.5;P2 = 0.5; P3 = 0;
+P1 = 0.5;P2 = 0.3; P3 = 0.2;
 P = [P1 P2 P3];
 
 if sum(P) ~= 1,
@@ -41,17 +41,23 @@ Isp = 350;
 g0 = 9.81/1000;
 
 Fit(3,1) = 0;
-Mpay = 10000; %[kg]
+Mpay = 5000; %[kg]
 Npop = 70; % Tamanho da populacao
-Ngen = 100; % Numero de geracoes
+Ngen = 50; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
-nW = 20;
+nW = 5;
 Wbool = true;
 
 if ~Wbool,
     nW = 1;
+end
+
+zerosP = nnz(P==0);
+
+if zerosP>=2,
+nW = 0;
 end
 
 type = 'bitString'; % doubleVector
@@ -135,6 +141,7 @@ Wcheck =[];
 for j =1:nW;
     [xbest, fbest, exitflag] = ga(@fitn, Nvars, [], [], [], [], ...
         lb, ub, [], [], optsINICIAL);
+    fprintf('%d/%d\n',j,nW)
     if ~Wbool, 
     fid = fopen(fGain, 'at' );
     fprintf(fid, '\nWFINAL = ');
@@ -144,7 +151,7 @@ for j =1:nW;
     
     if Wbool,
         Wcheck = [Wcheck;W];
-        disp(W)
+        %disp(W);
         W(:) = 1;
     end 
 end
@@ -216,7 +223,7 @@ opts = gaoptimset(...
     'PopulationSize', Npop, ...
     'Generations', Ngen, ...
     'EliteCount', Neli, ...
-    'PlotFcns', {@gaplotbestfModified,@gaplotscores,@gaplotdistance,@gaplotscorediversity,@gaplotbestindiv,@gaplotrange},...
+    'PlotFcns', {@gaplotbestfModified,@gaplotscoresM,@gaplotdistanceM,@gaplotscorediversityM,@gaplotbestindivM,@gaplotrangeM},...
     'CrossoverFcn', @crossoverscattered,...
     'FitnessScalingFcn', @fitscalingrank,...
     'MutationFcn',{@mutationuniform, 0.05}, ...
