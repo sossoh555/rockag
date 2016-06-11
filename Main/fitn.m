@@ -33,7 +33,7 @@ end
 %=======================
 %Important Considerations
 %=======================
-pPL = lambda/(1+lambda);
+pPL = (lambda/(1+lambda));%^N;
 
 
 %=======================
@@ -61,21 +61,25 @@ end
 %=======================
 
 if MVECbool || ALLbool,
-    mf = Mpay*((lambda+e)/lambda);
-    num = (pPL^(1/N))*(1-e) + e;
-    n = (1/num)^N;
-    Mvec = mf*n;
-    MvecFit = Mvec*W(2);
+%     mf = Mpay*((lambda+e)/lambda);
+%     num = (pPL^(1/N))*(1-e) + e;
+%     n = (1/num)^N;
+%     Mvec = mf*n;
+%     MvecFit = Mvec*W(2);
+
+
+Nmax = round(N);
+for i =0:1:Nmax
+mE(i+1) = (1 - pPL^(1/Nmax))*e*Mpay/(pPL^((Nmax - i)/Nmax));
+mp(i+1) = (1 - pPL^(1/Nmax))*(1-e)*Mpay/(pPL^((Nmax - i)/Nmax));
+end
+Mvec = sum(mE)+sum(mp) + Mpay;
+MvecFit = Mvec*W(2);
+%Mvec = Mpay*(lambda^(1/N) + 1)/(lambda^(1/N));
+
 end
 
-%Nmax = round(N);
-%for i =0:1:Nmax
-%mE(i+1) = (1 - pPL^(1/Nmax))*e*Mpay/(pPL^((Nmax - i)/Nmax));
-%mp(i+1) = (1 - pPL^(1/Nmax))*(1-e)*Mpay/(pPL^((Nmax - i)/Nmax));
-%end
-%Mvec = sum(mE)+sum(mp) + Mpay;
-%Mvecfit = Mvec/W2;
-%Mvec = Mpay*(lambda^(1/N) + 1)/(lambda^(1/N));
+
 
 %=======================
 %        Cost
@@ -120,8 +124,10 @@ if DEBUG,
     fprintf(fid,'| %f',FITNESS);
     fprintf(fid,'\n');
     %%%%%%%%%%%%%%%% INFORMACOES DO AG %%%%%%%%%%%%%%%%%%%%%%%
-    mp = Mvec - mf;
-    mE = Mvec - mp - Mpay;
+    mp = sum(mp);
+    mE = sum(mE);
+    %mp = Mvec - mf;
+    %mE = Mvec - mp - Mpay;
     
     ch1 = {'FIT','dVFit','MvecFit','CFit','dVF [%]','MvF [%]','CF [%]','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
     ch2 = {'pPL [%]','Mpay [kg]','mf [kg]','mp [kg]','mE [kg]'};
@@ -158,6 +164,7 @@ if DEBUG,
     wid(end-1) = wid(end-1) + 1;
     wid(end-2) = wid(end-2) + 1;
     wid(end-3) = wid(end-3) + 1;
+    
     dVFp = 100*delVFit/FITNESS;
     MvFp = 100*MvecFit/FITNESS;
     CFp = 100*CostFit/FITNESS;

@@ -26,7 +26,7 @@ DELVbool = true;
 COSTbool = true;
 W1 = 1;W2 = 1;W3 = 1;
 W = [W1 W2 W3] ;
-P1 = 0.5;P2 = 0.3; P3 = 0.2;
+P1 = 1/3;P2 = 1/3; P3 = 1/3;
 P = [P1 P2 P3];
 
 if sum(P) ~= 1,
@@ -42,12 +42,12 @@ g0 = 9.81/1000;
 
 Fit(3,1) = 0;
 Mpay = 5000; %[kg]
-Npop = 70; % Tamanho da populacao
-Ngen = 50; % Numero de geracoes
+Npop = 50; % Tamanho da populacao
+Ngen = 100; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
-nW = 5;
+nW = 2;
 Wbool = true;
 
 if ~Wbool,
@@ -132,8 +132,7 @@ optsINICIAL = gaoptimset(...
     'FitnessScalingFcn', @fitscalingrank,...
     'MutationFcn',{@mutationuniform, mutationRate}, ...
     'SelectionFcn', @selectionroulette,...
-    'StallGenLimit', 50, ...
-    'FitnessScalingFcn',{@fitscalingtop,0.9},...
+    'StallGenLimit', 50, ...%'FitnessScalingFcn',{@fitscalingtop,0.9},...
     'OutputFcn',@outputGA);
 
 scalingGain = true;
