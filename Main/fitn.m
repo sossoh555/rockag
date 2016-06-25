@@ -14,6 +14,7 @@ if strcmp(type,'bitString'),
     out = divVec(x,cut);
     N = de2re(out{1},test.Nmin,test.Nmax);
     lambda = de2re(out{2},test.Lmin,test.Lmax);
+    %lambda = lambda^N;
     e = de2re(out{3},test.Emin,test.Emax);
     
 %     if DEBUG,
@@ -33,7 +34,7 @@ end
 %=======================
 %Important Considerations
 %=======================
-pPL = (lambda/(1+lambda));%^N;
+pPL = (lambda/(1+lambda));
 
 
 %=======================
@@ -43,6 +44,7 @@ pPL = (lambda/(1+lambda));%^N;
 if DELVbool || ALLbool,
     % U = log(((1+lambda)/(e + lambda))^N);
     %delV = g0*Isp*U;
+
     
     num = (pPL^(1/N))*(1-e) + e;
     U = log(1/num);
@@ -87,8 +89,12 @@ end
 if COSTbool || ALLbool,
     Nr = round(N);
     Cost = 0;
+    
     for i=1:Nr,
-        Cost = Cost + Nr*(1 + A(Nr)*exp(-((0.025*B(Nr))/(lambda-lambda*e+e))^3.5));
+        A = -0.1*Nr + 0.7;
+        B = 2*Nr + 13;
+        L = lambda^Nr;
+        Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*e+e))^3.5));
     end
     CostFit = Cost*W(3);
 end
@@ -107,10 +113,13 @@ Fit(1,dir+1) = delVFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(2,dir+1) = MvecFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(3,dir+1) = CostFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 
-
 FITNESS = delVFit + MvecFit + CostFit;
-%if FITNESS >1, FITNESS = 1; end
+%if FITNESS > 1, FITNESS = 1; end
 
+
+    Penalty = 0;
+    fPenal = Penalty*pPL/0.05;
+    FITNESS = FITNESS + fPenal; 
 if DEBUG,
     %nameFile =  strcat(POP,finalName,'.txt');
     %fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
@@ -126,15 +135,16 @@ if DEBUG,
     %%%%%%%%%%%%%%%% INFORMACOES DO AG %%%%%%%%%%%%%%%%%%%%%%%
     mp = sum(mp);
     mE = sum(mE);
+    mf = Mvec - mp;
     %mp = Mvec - mf;
     %mE = Mvec - mp - Mpay;
     
-    ch1 = {'FIT','dVFit','MvecFit','CFit','dVF [%]','MvF [%]','CF [%]','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
+    ch1 = {'FIT','Penal','dVFit','MvecFit','CFit','dVF [%]','MvF [%]','CF [%]','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
     ch2 = {'pPL [%]','Mpay [kg]','mf [kg]','mp [kg]','mE [kg]'};
     
     colheadings = [ch1 ch2];
     
-    fms1 = {'.2E','.2E','.2E','.2E','.3f','.3f','.3f','.2f','.4f','.4f','.4f','.2E','.4f'};
+    fms1 = {'.2E','.2E','.2E','.2E','.2E','.3f','.3f','.3f','.2f','.4f','.4f','.4f','.2E','.4f'};
     fms2 = {'.4f','.2E','.2E','.2E','.2E'};
     
     fms = [fms1 fms2];
@@ -151,7 +161,7 @@ if DEBUG,
     [truefalse, aux] = ismember('FIT', colheadings);wid(aux) = wid(index);
     [truefalse, aux] = ismember('dVFit', colheadings);wid(aux) = wid(index);
     [truefalse, aux] = ismember('CFit', colheadings);wid(aux) = wid(index);
-    
+    [truefalse, aux] = ismember('Penal', colheadings);wid(aux) = wid(index);
     [truefalse, index] = ismember('N', colheadings);
     wid(index) = wid(index)+3;
     
@@ -170,7 +180,7 @@ if DEBUG,
     CFp = 100*CostFit/FITNESS;
     
     
-    data1 = [FITNESS delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
+    data1 = [FITNESS  fPenal delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
     data2 = [pPL*100 Mpay mf mp mE];
     data = [data1 data2];
     

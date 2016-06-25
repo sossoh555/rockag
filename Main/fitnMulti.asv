@@ -9,7 +9,7 @@ Cost = 0;delV = 0;Mvec = 0; mf = 0; mp = 0; mE = 0;
 CostFit = 0;delVFit = 0;MvecFit = 0;
 
 if strcmp(type,'bitString'),
-
+    disp(x)
     out = divVec(x,cut);
     N = de2re(out{1},test.Nmin,test.Nmax);
     lambda = de2re(out{2},test.Lmin,test.Lmax);
@@ -174,14 +174,13 @@ if DEBUG,
     wid(end-1) = wid(end-1) + 1;
     wid(end-2) = wid(end-2) + 1;
     wid(end-3) = wid(end-3) + 1;
-    somaFit = sum(FITNESS);
     
-    dVFp = 100*delVFit/somaFit;
-    MvFp = 100*MvecFit/somaFit;
-    CFp = 100*CostFit/somaFit;
+   % dVFp = 100*delVFit/FITNESS;
+   % MvFp = 100*MvecFit/FITNESS;
+   5 CFp = 100*CostFit/FITNESS;
     
     
-    data1 = [somaFit delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
+    data1 = [FITNESS delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
     data2 = [pPL*100 Mpay mf mp mE];
     data = [data1 data2];
     

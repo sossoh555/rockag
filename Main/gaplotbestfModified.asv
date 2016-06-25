@@ -24,15 +24,15 @@ switch flag
         ylabel('Valor do Fitness','interp','none');
         plotBest = plot(state.Generation,min(state.Score),'.k');
         set(plotBest,'Tag','gaplotbestf');
-        plotMean = plot(state.Generation,meanf(state.Score),'.b');
-        set(plotMean,'Tag','gaplotmean');
+       % plotMean = plot(state.Generation,meanf(state.Score),'.b');
+       % set(plotMean,'Tag','gaplotmean');
         plotChange = plot(state.Generation, min(state.Score),'*r','MarkerSize',5);
         set(plotChange, 'Tag','gaplotchange');
         title(['Melhor: ',' Média: '],'interp','none')
     case 'iter'
         best = min(state.Score);
         m    = meanf(state.Score);
-        %set(gca,'xlim',[0,state.Generation + 5]);
+        set(gca,'xlim',[0,state.Generation + 5]);
         plotBest = findobj(get(gca,'Children'),'Tag','gaplotbestf');
         plotMean = findobj(get(gca,'Children'),'Tag','gaplotmean');
         plotChange = findobj(get(gca,'Children'), 'Tag', 'gaplotchange');

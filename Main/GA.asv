@@ -34,16 +34,16 @@ g0 = 9.81/1000;
 
 Fit(3,1) = 0;
 Mpay = 5000; %[kg]
-Npop =50; % Tamanho da populacao
-Ngen = 50; % Numero de geracoes
+Npop = 100; % Tamanho da populacao
+Ngen = 150; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
 %1 - dV; 2 - m; 3 - cost
 %W1 = 1/Udes;W2 = 1/3000000;W3 = 0;
-W1 = 1; W2 = 0; W3 =0;
+W1 = 1; W2 = 0; W3 =1;
 W = [W1 W2 W3] ;
-P1 = 1;P2 = 0;P3 = 0.0;
+P1 = 1;P2 = 0.00;P3 = 0.00;
 P = [P1 P2 P3];
 
 if sum(P) ~= 1,
@@ -232,7 +232,8 @@ opts = gaoptimset(...
     'FitnessScalingFcn', @fitscalingrank,...
     'MutationFcn',{@mutationuniform, 0.05}, ...
     'SelectionFcn', @selectionroulette,...
-    'StallGenLimit', 50, ...%'FitnessScalingFcn',{@fitscalingtop,0.9},...
+    'StallGenLimit', 50, ...
+    'FitnessScalingFcn',{@fitscalingtop,0.9},...
     'OutputFcn',@outputGA);
 
 %%

@@ -3,8 +3,6 @@ global g0 Isp cut test type out finalName PATH
 global hMarks
 
 fprintf('flag: %s\n',flag)
-
-display(x)
 switch flag
     case 'init'
         e = [0.001 0.01 0.05 0.1 0.2 0.5];
@@ -17,9 +15,9 @@ switch flag
             hold on
         end
         hMarks=[];
-        title('\Delta V vs \lambda');
-        xlabel('\lambda');
-        ylabel('\Delta V [km/s]');
+        title('Velocidade de Burnout vs Razão do Payload');
+        xlabel('Razão do Payload \lambda');
+        ylabel('Velocidade de Burnout [km/s]');
         
         
     case {'iter','interrupt'}
@@ -36,11 +34,7 @@ switch flag
             eBest = x(3);
             lBest = x(2);
         end
-        
-         num = (pPL^(1/N))*(1-e) + e;
-         aux = log(1/num);
-         U = aux*Isp*g0*N;
-        %U=g0*Isp*log((1+lBest)./(lBest+eBest));
+        U=g0*Isp*log((1+lBest)./(lBest+eBest));
         
         f = findobj('name','plotN');
         set(0, 'currentfigure', f);
