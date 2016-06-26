@@ -53,7 +53,7 @@ if DELVbool || ALLbool,
     %num = e*((1/pPL)^(1/N)) + (1-e);
     %delV = Isp*g0*N*((1/pPL)^(1/N))/num;
     
-    delVFit = abs(W(1)*(Udes - delV)/Udes)*10000000;
+    delVFit = abs(W(1)*(Udes - delV)/Udes);
 end
 
 
@@ -91,32 +91,29 @@ end
 %        Cost
 %=======================
 if COSTbool || ALLbool,
-    Nr = floor(N);
-    rem = mod(N,Nr);
+    Nr = N;
     Cost = 0;
-    LOX = 0.08;
-    RP = 0.20;
     
-    RPLOX = 0.430585683;
-
-    for i=1:Nr,
-        A = -0.1*Nr + 0.7;
-        B = 2*Nr + 13;
+    for i=1:n,
+             A = -0.1*n + 0.7;
+        B = 2*n + 13;
         L = lambda/(lambda + 1);
         E = e/(e + 1);
-        mi = mE(Nr);
-        Cost = Cost + 1 + A*exp(-mi/400000);
-        Cost = Cost + mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX;
-        %Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
+        if n == 1,
+            m(n) = Mvec - mp(n);
+            v(n) = Isp*g*log(Mvec/m(n));
+        else
+            m(n-1) = m(n-1) - mE(n-1);
+            m(n) = m(n-1) - mp(n);
+            v(n) = Isp*g*log(m(n-1)/m(n));
+        end
+        
+        
+        
+   
+        Cost = Cost + n*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
     end
-        A = -0.1*N + 0.7;
-        B = 2*N + 13;
-        L = lambda/(lambda + 1);
-        E = e/(e + 1);
-        mi = mE(Nr)*rem;
-        Cost = Cost + (1 + A*exp(-mi/400000))*rem;
-        Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
-        CostFit = Cost*W(3)/1e5;
+    CostFit = Cost*W(3);
 end
 
 

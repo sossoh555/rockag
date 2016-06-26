@@ -23,7 +23,7 @@ switch flag
         xlabel('Geração','interp','none');
         ylabel('Valor do Fitness','interp','none');
         plotBest = plot(state.Generation,min(state.Score),'.k');
-        set(plotBest,'Tag','gaplotbestf');
+        %%set(plotBest,'Tag','gaplotbestf');
         %%plotMean = plot(state.Generation,meanf(state.Score),'.b');
         %%set(plotMean,'Tag','gaplotmean');
         plotChange = plot(state.Generation, min(state.Score),'*r','MarkerSize',5);
