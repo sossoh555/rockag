@@ -51,7 +51,7 @@ if sum(P) ~= 1,
 end
 
 
-nW = 0;
+nW = 10;
 Wbool = true;
 
 if ~Wbool,

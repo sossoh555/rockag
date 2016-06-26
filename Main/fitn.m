@@ -99,25 +99,36 @@ if COSTbool || ALLbool,
     
     RPLOX = 0.430585683;
 
+    Nr = round(N);
+    Cost = 0;
+    
     for i=1:Nr,
         A = -0.1*Nr + 0.7;
         B = 2*Nr + 13;
-        L = lambda/(lambda + 1);
-        E = e/(e + 1);
-        mi = mE(Nr);
-        Cost = Cost + 1 + A*exp(-mi/400000);
-        Cost = Cost + mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX;
-        %Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
+        L = lambda^Nr;
+        Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*e+e))^3.5));
     end
-        A = -0.1*N + 0.7;
-        B = 2*N + 13;
-        L = lambda/(lambda + 1);
-        E = e/(e + 1);
-        mi = mE(Nr)*rem;
-        Cost = Cost + (1 + A*exp(-mi/400000))*rem;
-        Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
-        CostFit = Cost*W(3)/1e5;
+    CostFit = Cost;
 end
+%     for i=1:Nr,
+%         A = -0.1*Nr + 0.7;
+%         B = 2*Nr + 13;
+%         L = lambda/(lambda + 1);
+%         E = e/(e + 1);
+%         mi = mE(Nr);
+%         Cost = Cost + 1 + A*exp(-mi/400000);
+%         Cost = Cost + mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX;
+%         %Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
+%     end
+%         A = -0.1*N + 0.7;
+%         B = 2*N + 13;
+%         L = lambda/(lambda + 1);
+%         E = e/(e + 1);
+%         mi = mE(Nr)*rem;
+%         Cost = Cost + (1 + A*exp(-mi/400000))*rem;
+%         Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
+%         CostFit = Cost*W(3)/1e5;
+% end
 
 
 %=======================
