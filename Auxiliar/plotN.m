@@ -118,7 +118,7 @@ switch flag
         chH = get(gca,'Children');
 
         %set(gca,'Children',[chH(3:end);chH(2);chH(1)])
-        legend('Melhores indivíduos anteriores','Melhor indivíduo atual',...
-            'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5');
+        %legend('Melhores indivíduos anteriores','Melhor indivíduo atual',...
+         %   'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5');
 end
 end

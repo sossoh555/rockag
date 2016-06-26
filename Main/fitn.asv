@@ -54,7 +54,7 @@ if DELVbool || ALLbool,
     %num = e*((1/pPL)^(1/N)) + (1-e);
     %delV = Isp*g0*N*((1/pPL)^(1/N))/num;
     
-    delVFit = abs(W(1)*(Udes - delV)/Udes);
+    delVFit = abs(W(1)*(Udes - delV)/Udes)*10000000;
 end
 
 
@@ -110,29 +110,25 @@ if COSTbool || ALLbool,
 %     end
 %     CostFit = Cost;
 % end
-    for i=1:Nr,
-        A = -0.1*Nr + 0.7;
-        B = 2*Nr + 13;
-        L = lambda/(lambda + 1);
-        E = e/(e + 1);
-        L = lambda;
-        E = e;
-        mi = mE(Nr);
-        Cost = Cost + 1 + A*exp(-mi/400000);
-        %Cost = Cost + mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX;
-        %Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
-    end
-        A = -0.1*N + 0.7;
-        B = 2*N + 13;
-        L = lambda/(lambda + 1);
-        E = e/(e + 1);
-        L = lambda;
-        E = e;
-        mi = mE(Nr)*rem;
-        Cost = Cost + (1 + A*exp(-mi/400000))*rem;
-        %Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
-        CostFit = Cost*W(3);
-end
+%     for i=1:Nr,
+%         A = -0.1*Nr + 0.7;
+%         B = 2*Nr + 13;
+%         L = lambda/(lambda + 1);
+%         E = e/(e + 1);
+%         mi = mE(Nr);
+%         Cost = Cost + 1 + A*exp(-mi/400000);
+%         Cost = Cost + mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX;
+%         %Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
+%     end
+%         A = -0.1*N + 0.7;
+%         B = 2*N + 13;
+%         L = lambda/(lambda + 1);
+%         E = e/(e + 1);
+%         mi = mE(Nr)*rem;
+%         Cost = Cost + (1 + A*exp(-mi/400000))*rem;
+%         Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
+%         CostFit = Cost*W(3)/1e5;
+% end
 
 
 %=======================
@@ -148,7 +144,6 @@ Fit(1,dir+1) = delVFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(2,dir+1) = MvecFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(3,dir+1) = CostFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 
-MvecFit = 0;
 FITNESS = delVFit + MvecFit + CostFit;
 %if FITNESS > 1, FITNESS = 1; end
 

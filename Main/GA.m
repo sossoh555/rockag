@@ -21,8 +21,8 @@ test = struct('Nmin',1,'Nmax',6,...
 % fitness
 
 ALLbool = false;
-MVECbool = true;
 DELVbool = true;
+MVECbool = true;
 COSTbool = true;
 
 DEBUG = true;
@@ -34,8 +34,8 @@ g0 = 9.81/1000;
 
 Fit(3,1) = 0;
 Mpay = 5000; %[kg]
-Npop = 100; % Tamanho da populacao
-Ngen = 150; % Numero de geracoes
+Npop = 50; % Tamanho da populacao
+Ngen = 30; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
@@ -51,7 +51,7 @@ if sum(P) ~= 1,
 end
 
 
-nW = 10;
+nW = 20;
 Wbool = true;
 
 if ~Wbool,
