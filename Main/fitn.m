@@ -34,7 +34,7 @@ end
 %=======================
 %Important Considerations
 %=======================
-pPL = (lambda/(1+lambda));
+%pPL = (lambda/(1+lambda));
 
 
 %=======================
@@ -46,9 +46,10 @@ if DELVbool || ALLbool,
     %delV = g0*Isp*U;
 
     
-    num = (pPL^(1/N))*(1-e) + e;
-    U = log(1/num);
-    delV = U*Isp*g0*N;
+    [pPL, delV] = delVcalc(lambda,e,N);
+    %num = (pPL^(1/N))*(1-e) + e;
+    %U = log(1/num);
+    %delV = U*Isp*g0*N;
     %num = e*((1/pPL)^(1/N)) + (1-e);
     %delV = Isp*g0*N*((1/pPL)^(1/N))/num;
     
@@ -71,7 +72,8 @@ if MVECbool || ALLbool,
 
 
 Nmax = round(N);
-for i =0:1:Nmax
+for i =0:1:Nmax - 1
+    pPL = (lambda/(1+lambda))^Nmax;
 mE(i+1) = (1 - pPL^(1/Nmax))*e*Mpay/(pPL^((Nmax - i)/Nmax));
 mp(i+1) = (1 - pPL^(1/Nmax))*(1-e)*Mpay/(pPL^((Nmax - i)/Nmax));
 end

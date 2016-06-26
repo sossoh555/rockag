@@ -9,7 +9,7 @@ set(0,'DefaultFigureWindowStyle','normal');
 global cut Mpay Udes DEBUG g0 Isp type test finalName
 global PATH POP fTEST scalingGain fGain
 global ALLbool MVECbool DELVbool COSTbool
-global W
+global W 
 global Fit P
 
 PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\Data\';
@@ -34,8 +34,8 @@ g0 = 9.81/1000;
 
 Fit(3,1) = 0;
 Mpay = 5000; %[kg]
-Npop =50; % Tamanho da populacao
-Ngen = 50; % Numero de geracoes
+Npop = 100; % Tamanho da populacao
+Ngen = 150; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
@@ -384,6 +384,7 @@ h = get(0,'children');
 for i=1:length(h)
     name = get(h(i),'name');
     saveas(h(i), strcat(fullfile(PATH, strcat(name,'_',finalName))), 'fig');
+    saveas(h(i), strcat(fullfile(PATH, strcat(name,'_',finalName))), 'epsc')
 end
 end
 
