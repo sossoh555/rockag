@@ -55,7 +55,7 @@ switch flag
         
     case 'done'
         %LegnD = legend('Melhor Fitness', 'Melhor indivíduo Modificado');
-        LegnD = legend('Melhor Fitness','Fitness Médio', 'Melhor indivíduo Modificado');
+        LegnD = legend('Melhor Fitness', 'Melhor indivíduo Modificado');
         set(LegnD,'FontSize',8);
         hold off;
 end
