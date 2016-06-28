@@ -78,6 +78,13 @@ for i =0:1:Nmax - 1
 mE(i+1) = (1 - pPL^(1/Nmax))*e*Mpay/(pPL^((Nmax - i)/Nmax));
 mp(i+1) = (1 - pPL^(1/Nmax))*(1-e)*Mpay/(pPL^((Nmax - i)/Nmax));
 end
+% i = i + 1;
+% Nr = floor(N);
+% rem = mod(N,Nr);
+% Nmax = N;
+% mE(i+1) = (1 - pPL^(1/Nmax))*e*Mpay/(pPL^((Nmax - i)/Nmax))*rem;
+% mp(i+1) = (1 - pPL^(1/Nmax))*(1-e)*Mpay/(pPL^((Nmax - i)/Nmax)*rem);
+
 Mvec = sum(mE)+sum(mp) + Mpay;
 
 
@@ -148,8 +155,9 @@ Fit(1,dir+1) = delVFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(2,dir+1) = MvecFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(3,dir+1) = CostFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 
-MvecFit = 0;
+% MvecFit = 0;
 FITNESS = delVFit + MvecFit + CostFit;
+FITNESS = log10(FITNESS);
 %if FITNESS > 1, FITNESS = 1; end
 
 
@@ -211,9 +219,9 @@ if DEBUG,
     wid(end-2) = wid(end-2) + 1;
     wid(end-3) = wid(end-3) + 1;
     
-    dVFp = 100*delVFit/FITNESS;
-    MvFp = 100*MvecFit/FITNESS;
-    CFp = 100*CostFit/FITNESS;
+    dVFp = 100*delVFit/(10^FITNESS);
+    MvFp = 100*MvecFit/(10^FITNESS);
+    CFp = CostFit/(10^FITNESS);
     
     
     data1 = [FITNESS  fPenal delVFit MvecFit CostFit dVFp MvFp CFp N lambda e delV Mvec Cost];
