@@ -17,7 +17,7 @@ switch flag
             semilogx(l,U,'Tag',sprintf('plotN%d',i));
             hold on
         end
-
+        
         
         hMarks=[];
         title('\Delta V vs \lambda para N = 1','interp','none');
@@ -53,16 +53,16 @@ switch flag
         end
         
         for i=1:size(e,2),
-                    [pPL, Ug] = delVcalc(l,e(i),N);
+            [pPL, Ug] = delVcalc(l,e(i),N);
             %U=g0*Isp*log((1+l)./(l+e(i)));
             semilogx(l,Ug,'Tag',sprintf('plotN%d',i));
-
+            
         end
- 
+        
         set(f,'defaulttextinterpreter','latex');
         title(sprintf('Delta V vs lambda para N = %.2f',N))
-
- 
+        
+        
         %set(get(gca,'Title'),'String',sprintf('\Delta V vs \lambda para N = %.2f',N));
         
         %axesO = get(gca,'children');
@@ -74,24 +74,50 @@ switch flag
                 newX = [get(plotBest,'Xdata')];
                 newY = [get(plotBest,'Ydata')];
                 semilogx(newX,newY,'ro', 'LineWidth',1,'MarkerSize',5);
-                chH = get(gca,'Children');
-%                         legend('Melhores indivíduos anteriores','Melhor indivíduo atual',...
-%             'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5');
-                if chH(2).Marker == 'x'
-                    %set(gca,'Children',[chH(2);chH(1); chH(3:end)])
-
-                end
+                
+                %                         legend('Melhores indivíduos anteriores','Melhor indivíduo atual',...
+                %             'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5');
+                
             else
-                          plotBest = findobj(get(gca,'Children'),'Marker','x');
+                plotBest = findobj(get(gca,'Children'),'Marker','x');
                 plotOld = findobj(get(gca,'Children'),'Marker','o');
-
+                
                 newX = [get(plotOld,'Xdata') get(plotBest,'Xdata')];
                 newY = [get(plotOld, 'Ydata') get(plotBest,'Ydata')];
                 set(plotOld, 'Xdata',newX, 'Ydata', newY);
-                legend('Melhor indivíduo atual','Melhores indivíduos anteriores',...
-            'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5');
- 
-              
+                chH = get(gca,'Children');
+                
+                %                 for k = size(chH,1),
+                %                     if strcmp(chH(k).Marker,'x'),
+                %                         x = k
+                %                     elseif strcmp(chH(k).Marker,'o'),
+                %                         o = k
+                %                     end
+                %     disp(chH(k).Marker)
+                %                 end
+                %
+                
+                %set(gca,'Children',[chH(2);chH(1); chH(3:end)])
+                if strcmp(chH(8).Marker,'x'),
+                    chH = get(gca,'Children');
+                    set(gca,'Children',[chH(end);chH(end-1);chH(1:end-2)])
+                    chH
+                    
+                    legend(...
+                        'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
+                        'Melhores indivíduos anteriores','Melhor indivíduo atual');
+                elseif strcmp(chH(7).Marker,'x'),
+                    
+                    chH = get(gca,'Children');
+                    set(gca,'Children',[chH(end-1);chH(end);chH(1:end-2)])
+                    chH
+                    
+                    legend(...
+                        'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
+                        'Melhores indivíduos anteriores','Melhor indivíduo atual');
+                end
+                
+                
             end
             plotBest = findobj(get(gca,'Children'),'Marker','x');
             newX = [lBest];
@@ -109,16 +135,17 @@ switch flag
         drawnow
         
         
-
+        
         
     case 'done'
-             f = findobj('name','plotN');
-        set(0, 'currentfigure', f);
-        hold on
-        chH = get(gca,'Children');
-
-        %set(gca,'Children',[chH(3:end);chH(2);chH(1)])
-        %legend('Melhores indivíduos anteriores','Melhor indivíduo atual',...
-         %   'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5');
+%         f = findobj('name','plotN');
+%         set(0, 'currentfigure', f);
+%         hold on
+%         chH = get(gca,'Children');
+%         set(gca,'Children',[chH(3:end);chH(2);chH(1)])
+%         
+%         legend(...
+%             'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
+%             'Melhor indivíduo atual','Melhores indivíduos anteriores');
 end
 end
