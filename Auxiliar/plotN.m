@@ -1,6 +1,6 @@
 function plotN(x, flag)
-global g0 Isp cut test type out finalName PATH
-global hMarks Udes
+global cut test type out 
+global hMarks
 
 fprintf('flag: %s\n',flag)
 e = [0.001 0.01 0.05 0.1 0.2 0.5];
@@ -41,7 +41,6 @@ switch flag
         end
         
         [pPL, U] = delVcalc(lBest,eBest,N);
-        %U=g0*Isp*log((1+lBest)./(lBest+eBest));
         
         f = findobj('name','plotN');
         set(0, 'currentfigure', f);
@@ -54,7 +53,6 @@ switch flag
         
         for i=1:size(e,2),
             [pPL, Ug] = delVcalc(l,e(i),N);
-            %U=g0*Isp*log((1+l)./(l+e(i)));
             semilogx(l,Ug,'Tag',sprintf('plotN%d',i));
             
         end
@@ -62,10 +60,7 @@ switch flag
         set(f,'defaulttextinterpreter','latex');
         title(sprintf('Delta V vs lambda para N = %.2f',N))
         
-        
-        %set(get(gca,'Title'),'String',sprintf('\Delta V vs \lambda para N = %.2f',N));
-        
-        %axesO = get(gca,'children');
+
         if isempty(findobj('Marker','x'))
             semilogx(lBest,U,'kx', 'LineWidth',3,'MarkerSize',9);
         else
@@ -75,8 +70,7 @@ switch flag
                 newY = [get(plotBest,'Ydata')];
                 semilogx(newX,newY,'ro', 'LineWidth',1,'MarkerSize',5);
                 
-                %                         legend('Melhores indivíduos anteriores','Melhor indivíduo atual',...
-                %             'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5');
+
                 
             else
                 plotBest = findobj(get(gca,'Children'),'Marker','x');
@@ -87,22 +81,10 @@ switch flag
                 set(plotOld, 'Xdata',newX, 'Ydata', newY);
                 chH = get(gca,'Children');
                 
-                %                 for k = size(chH,1),
-                %                     if strcmp(chH(k).Marker,'x'),
-                %                         x = k
-                %                     elseif strcmp(chH(k).Marker,'o'),
-                %                         o = k
-                %                     end
-                %     disp(chH(k).Marker)
-                %                 end
-                %
-                
-                %set(gca,'Children',[chH(2);chH(1); chH(3:end)])
+      
                 if strcmp(chH(8).Marker,'x'),
                     chH = get(gca,'Children');
-                    set(gca,'Children',[chH(end);chH(end-1);chH(1:end-2)])
-                    chH
-                    
+                    set(gca,'Children',[chH(end);chH(end-1);chH(1:end-2)])    
                     legend(...
                         'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
                         'Melhores indivíduos anteriores','Melhor indivíduo atual');
@@ -110,8 +92,6 @@ switch flag
                     
                     chH = get(gca,'Children');
                     set(gca,'Children',[chH(end-1);chH(end);chH(1:end-2)])
-                    chH
-                    
                     legend(...
                         'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
                         'Melhores indivíduos anteriores','Melhor indivíduo atual');
@@ -123,29 +103,10 @@ switch flag
             newX = [lBest];
             newY = [U];
             set(plotBest, 'Xdata',newX, 'Ydata', newY);
-            %set(hMarks,'Color','r','LineWidth',1, 'Marker','o','MarkerSize',5);
-            
-            
-            
-            %hMarks = [hMarks semilogx(lBest,U,'kx', 'LineWidth',3,'MarkerSize',9)];
-            
         end
-        
-        
         drawnow
-        
-        
-        
-        
+       
     case 'done'
-%         f = findobj('name','plotN');
-%         set(0, 'currentfigure', f);
-%         hold on
-%         chH = get(gca,'Children');
-%         set(gca,'Children',[chH(3:end);chH(2);chH(1)])
-%         
-%         legend(...
-%             'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
-%             'Melhor indivíduo atual','Melhores indivíduos anteriores');
 end
+
 end

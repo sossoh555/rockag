@@ -128,16 +128,12 @@ switch flag
         
     case {'iter','interrupt'}
         
-        if ~scalingGain && state.LastImprovement == state.Generation,
-            [~,i] = min(state.Score);
-            plotN(state.Population(i,:),flag);
-            
-        end
+   
         % fprintf('last improv: %d (now at %d)\n', state.LastImprovement,state.Generation)
         widp = 3;
         fprintf(fid,'Iterating ...');
         fprintf(fid,'<------> Generation %03d <------>\n',state.Generation);
-        
+      
         div = zeros(1,size(pop,2));
         
         for i =1:size(pop,1),
@@ -151,7 +147,10 @@ switch flag
             
             
             fprintf(fid,'| %f',scores(i,1));
-            if scores(i,1) == best(end),  fprintf(fid,' [BEST] |'); end
+            if scores(i,1) == best(end),  
+                fprintf(fid,' [BEST] |');
+             
+            end
             fprintf(fid,'\n');
         end
         fprintf(fid,'[DIV]: ');
@@ -160,6 +159,23 @@ switch flag
             
             fprintf(fid,'%*g ',widp,aux);
         end
+        
+        if ~scalingGain && state.LastImprovement == state.Generation,
+            [~,i] = min(state.Score);
+            plotN(state.Population(i,:),flag);
+            
+            fprintf(fid,'\n');
+            fprintf(fid, 'BEST Geração %d:\n',state.Generation);
+            fitn(state.Population(i,:));
+            fid = fopen(POP, 'at' );
+            fprintf(fid,'\n');
+            fprintf(fid,'\n');
+            
+        end
+      
+        
+  
+        fid = fopen(POP, 'at' );
         fprintf(fid,'\n');
         fprintf(fid,'\n');
         
@@ -174,9 +190,7 @@ switch flag
         FitAvg = zeros(1,3);
         
         if state.Generation == 1 && scalingGain,
-            
-            
-            
+
             FitAvg(1) = sum(Fit(1,1:end))/options.PopulationSize;
             FitAvg(2) = sum(Fit(2,1:end))/options.PopulationSize;
             FitAvg(3) = sum(Fit(3,1:end))/options.PopulationSize;

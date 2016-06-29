@@ -21,51 +21,76 @@ test = struct('Nmin',1,'Nmax',6,...
 % fitness
 
 ALLbool = false;
-DELVbool = true;
+DELVbool = false;
 MVECbool = true;
-COSTbool = true;
+COSTbool = false;
 
 DEBUG = true;
 
 
-Udes = 6;
-Isp = 350;
+Udes = 10;
+Isp = 250;
 g0 = 9.81/1000;
 
 Fit(3,1) = 0;
 Mpay = 5000; %[kg]
-Npop = 50; % Tamanho da populacao
-Ngen = 30; % Numero de geracoes
+Npop = 100; % Tamanho da populacao
+Ngen = 200; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
+type = 'bitString'; % doubleVector
+%type = 'doubleVector';
+
 %1 - dV; 2 - m; 3 - cost
 %W1 = 1/Udes;W2 = 1/3000000;W3 = 0;
-W1 = 1; W2 = 1; W3 =1;
-W = [W1 W2 W3] ;
-P1 = 0.5;P2 = 0.3;P3 = 0.2;
+
+P1 = 0.5;P2 = 0.4;P3 = 0.1; %padrao
+W1 = 1; W2 = 1; W3 = 1; %padrao
+nW = 20; %padrao
+if ALLbool
+    W1 = 1; W2 = 1; W3 =1;
+    W = [W1 W2 W3] ;
+
+else
+    if DELVbool,
+        W1 = 1;
+    else
+        W1 = 0;    
+    end
+    
+    if MVECbool,
+        W2 = 1;
+    else
+        W2 = 0;    
+    end
+    if COSTbool,
+        W3 = 1;
+    else
+        W3 = 0;    
+    end
+    W = [W1 W2 W3];
+end
+
 P = [P1 P2 P3];
 
 if sum(P) ~= 1,
    error('P deve ser igual a 1'); 
 end
 
-
-nW = 20;
 Wbool = true;
 
 if ~Wbool,
     nW = 1;
 end
 
-zerosP = nnz(P==0);
+zerosW = nnz(W==0);
 
-if zerosP>=2,
+if zerosW>=2,
 nW = 0;
 end
 
-type = 'bitString'; % doubleVector
-%type = 'doubleVector';
+
 
 
 
@@ -162,7 +187,7 @@ if Wbool,
     for p=1:size(Wcheck,2),
     W(p) = mean(Wcheck(:,p));    
     end
-   Wcheck = [Wcheck;W] 
+   Wcheck = [Wcheck;W] ;
    
   xlswrite(fExcel,Wcheck);
   %a = {1,nW+1,'=sum(a1,a2)'}
@@ -341,43 +366,6 @@ salvarImagens();
 %displayEndOfDemoMessage(mfilename)
 
 end
-% function analyzeBestString(xbest)
-% global cut Mpay W1 W2 e
-%
-% g = sprintf('%d ', xbest);
-% fprintf('BEST: %s\n', g)
-%
-% out = divVec(xbest,cut);
-% N = de2re(out{1},1,5);
-% fprintf('N: %f \n',N)
-%
-% lambda = de2re(out{2},0.0001,1);
-% fprintf('lambda: %f \n',lambda)
-%
-% obj(1) = abs(real(log(lambda + e*(1 - lambda)))^(-N)/W1);
-% fprintf('U: %f \n',obj(1))
-%
-% Mvec = (Mpay/((lambda)^N));
-% fprintf('Vehicle Mass: %f \n',Mvec)
-% end
-
-function analyzeBestVec(x)
-global W1 e Mpay W2 Udes
-g = sprintf('%d ', x);
-fprintf('BEST: %s\n', g)
-
-N = x(1);
-lambda = x(2);
-
-obj(1) =  abs(Udes - real(log(lambda + e*(1 - lambda))^(N)));
-
-fprintf('U: %f \n',obj(1))
-
-Mvec = (Mpay/((lambda)^N));
-fprintf('Vehicle Mass: %f \n',Mvec)
-fprintf('Vehicle Mass Pat: %f \n',Mvec/W2)
-
-end
 
 function salvarImagens()
 global PATH finalName
@@ -386,7 +374,9 @@ h = get(0,'children');
 for i=1:length(h)
     name = get(h(i),'name');
     saveas(h(i), strcat(fullfile(PATH, strcat(name,'_',finalName))), 'fig');
-    saveas(h(i), strcat(fullfile(PATH, strcat(name,'_',finalName))), 'epsc')
+    saveas(h(i), strcat(fullfile(PATH, strcat(name,'_',finalName))), 'epsc');
+    saveas(h(i), strcat(fullfile(PATH, strcat(name,'_',finalName))), 'png');
+    
 end
 end
 

@@ -24,8 +24,8 @@ switch flag
         ylabel('Valor do Fitness','interp','none');
         plotBest = plot(state.Generation,min(state.Score),'.k');
         set(plotBest,'Tag','gaplotbestf');
-        %%plotMean = plot(state.Generation,meanf(state.Score),'.b');
-        %%set(plotMean,'Tag','gaplotmean');
+        plotMean = plot(state.Generation,meanf(state.Score),'.b');
+        set(plotMean,'Tag','gaplotmean');
         plotChange = plot(state.Generation, min(state.Score),'*r','MarkerSize',5);
         set(plotChange, 'Tag','gaplotchange');
         title(['Melhor: ',' Média: '],'interp','none')
@@ -34,7 +34,7 @@ switch flag
         m    = meanf(state.Score);
         %set(gca,'xlim',[0,state.Generation + 5]);
         plotBest = findobj(get(gca,'Children'),'Tag','gaplotbestf');
-        %%plotMean = findobj(get(gca,'Children'),'Tag','gaplotmean');
+        plotMean = findobj(get(gca,'Children'),'Tag','gaplotmean');
         plotChange = findobj(get(gca,'Children'), 'Tag', 'gaplotchange');
         newX = [get(plotBest,'Xdata') state.Generation];
         newY = [get(plotBest,'Ydata') best];
@@ -48,14 +48,14 @@ switch flag
             %set(plotBest,'Xdata',newX, 'Ydata',newY, 'Color', 'k');
         end
         
-        %%newY = [get(plotMean,'Ydata') m];
-       %%set(plotMean,'Xdata',newX, 'Ydata',newY);
+        newY = [get(plotMean,'Ydata') m];
+        set(plotMean,'Xdata',newX, 'Ydata',newY);
         set(get(gca,'Title'),'String',sprintf('Melhor: %g Média: %g',best,m));
         
         
     case 'done'
         %LegnD = legend('Melhor Fitness', 'Melhor indivíduo Modificado');
-        LegnD = legend('Melhor Fitness', 'Melhor indivíduo Modificado');
+        LegnD = legend('Melhor Fitness', 'Fitness médio', 'Melhor indivíduo Modificado');
         set(LegnD,'FontSize',8);
         hold off;
 end
