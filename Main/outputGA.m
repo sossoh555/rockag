@@ -175,9 +175,9 @@ switch flag
       
         
   
-        fid = fopen(POP, 'at' );
-        fprintf(fid,'\n');
-        fprintf(fid,'\n');
+      %  fid = fopen(POP, 'at' );
+      %  fprintf(fid,'\n');
+      %  fprintf(fid,'\n');
         
         % Arrumaaaaaaaaaaaaar pesos
         %

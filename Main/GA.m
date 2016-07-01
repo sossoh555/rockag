@@ -16,26 +16,26 @@ PATH = 'C:\Users\Bruno\Google Drive\TG\Código\Main\Data\';
 
 
 test = struct('Nmin',1,'Nmax',6,...
-    'Lmin',0.001, 'Lmax',1, ...
+    'Lmin',0.001, 'Lmax',0.9, ...
     'Emin',0.1,'Emax',1);
 % fitness
 
 ALLbool = false;
-DELVbool = false;
+DELVbool = true;
 MVECbool = true;
-COSTbool = false;
+COSTbool = true;
 
 DEBUG = true;
 
 
-Udes = 10;
-Isp = 250;
+Udes = 9;
+Isp = 350;
 g0 = 9.81/1000;
 
 Fit(3,1) = 0;
 Mpay = 5000; %[kg]
 Npop = 100; % Tamanho da populacao
-Ngen = 200; % Numero de geracoes
+Ngen = 150; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
@@ -47,7 +47,7 @@ type = 'bitString'; % doubleVector
 
 P1 = 0.5;P2 = 0.4;P3 = 0.1; %padrao
 W1 = 1; W2 = 1; W3 = 1; %padrao
-nW = 20; %padrao
+nW = 5; %padrao
 if ALLbool
     W1 = 1; W2 = 1; W3 =1;
     W = [W1 W2 W3] ;
@@ -64,12 +64,14 @@ else
     else
         W2 = 0;    
     end
-    if COSTbool,
+    if COSTbool && ~MVECbool,
         W3 = 1;
+        W2 = 0;
+        MVECbool = true;
     else
-        W3 = 0;    
+        W3 = 1;    
     end
-    W = [W1 W2 W3];
+    W = [W1 W2 W3]
 end
 
 P = [P1 P2 P3];

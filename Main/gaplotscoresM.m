@@ -49,7 +49,7 @@ switch flag
             range = pop(1):pop(2);
             str = ['gaplotscore',int2str(i)];
             h = findobj(get(gca,'Children'),'Tag',str);
-            set(h,'Ydata',state.Score(range));
+            set(h,'Ydata',state.Score(range) - floor(mean(state.Score)));
         end
 end
 

@@ -120,25 +120,27 @@ if COSTbool || ALLbool,
     for i=1:Nr,
         A = -0.1*Nr + 0.7;
         B = 2*Nr + 13;
-        L = lambda/(lambda + 1);
-        E = e/(e + 1);
-        L = lambda;
-        E = e;
+%         L = lambda/(lambda + 1);
+%         E = e/(e + 1);
+%         L = lambda;
+%         E = e;
         mi = mE(Nr);
-        Cost = Cost + 1 + A*exp(-mi/400000);
+        %Cost = Cost + 1 + A*exp(-mi/400000);
+         
         Cost = Cost + mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX;
-        Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
+        %Cost = Cost + Nr*(1 + A*exp(-((0.025*B)/(L-L*E+E))^3.5));
     end
     A = -0.1*N + 0.7;
-    B = 2*N + 13;
-    L = lambda/(lambda + 1);
-    E = e/(e + 1);
-    L = lambda;
-    E = e;
+%     B = 2*N + 13;
+%     L = lambda/(lambda + 1);
+%     E = e/(e + 1);
+%     L = lambda;
+%     E = e;
     mi = mE(Nr)*rem;
-    Cost = Cost + (1 + A*exp(-mi/400000))*rem;
-    Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
-    CostFit = Cost*W(3);
+    %Cost = Cost + (1 + A*exp(-mi/400000))*rem;
+     Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
+    Cost = Cost + 299 + 14.2*log(sum(mE));
+     CostFit = Cost*W(3);
 end
 
 
@@ -194,7 +196,7 @@ if DEBUG,
     colheadings = [ch1 ch2];
     
     fms1 = {'.2E','.2E','.2E','.2E','.2E','.3f','.3f','.3f','.2f','.4f','.4f','.7f','.3f','.4f'};
-    fms2 = {'.4f','.2E','.3f','.3f','.3f'};
+    fms2 = {'.4f','.2E','.5E','.5E','.5E'};
     
     fms = [fms1 fms2];
     
