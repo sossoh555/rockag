@@ -42,7 +42,7 @@ end
 %          delV
 %=======================
 
-if DELVbool || ALLbool,
+%if DELVbool || ALLbool,
     % U = log(((1+lambda)/(e + lambda))^N);
     %delV = g0*Isp*U;
     
@@ -55,7 +55,7 @@ if DELVbool || ALLbool,
     %delV = Isp*g0*N*((1/pPL)^(1/N))/num;
     
     delVFit = abs(W(1)*(Udes - delV)/Udes);
-end
+%end
 
 
 
@@ -64,7 +64,7 @@ end
 %         Mvec
 %=======================
 
-if MVECbool || ALLbool,
+%if MVECbool || ALLbool,
     %     mf = Mpay*((lambda+e)/lambda);
     %     num = (pPL^(1/N))*(1-e) + e;
     %     n = (1/num)^N;
@@ -91,14 +91,14 @@ if MVECbool || ALLbool,
     MvecFit = Mvec*W(2);
     %Mvec = Mpay*(lambda^(1/N) + 1)/(lambda^(1/N));
     
-end
+%end
 
 
 
 %=======================
 %        Cost
 %=======================
-if COSTbool || ALLbool,
+%if COSTbool || ALLbool,
     Nr = floor(N);
     rem = mod(N,Nr);
     LOX = 0.08;
@@ -141,7 +141,7 @@ if COSTbool || ALLbool,
      Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
     Cost = Cost + 299 + 14.2*log(sum(mE));
      CostFit = Cost*W(3);
-end
+%end
 
 
 %=======================
@@ -157,13 +157,15 @@ Fit(1,dir+1) = delVFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(2,dir+1) = MvecFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 Fit(3,dir+1) = CostFit;% [r c] = size(Fit); fprintf('Size1: [%d %d]\n', r,c )
 
-if ~MVECbool && COSTbool,
-    MvecFit = 0;
-end
-
+% if ~MVECbool && COSTbool,
+%     MvecFit = 0;
+% end
+if ~MVECbool, MvecFit = 0; end
+if ~COSTbool, CostFit = 0; end
+if ~DELVbool, delVFit = 0; end
 % MvecFit = 0;
 fitness = delVFit + MvecFit + CostFit;
-FITNESS = log10(fitness);
+FITNESS = 100 + log10(fitness);
 %if FITNESS > 1, FITNESS = 1; end
 
 

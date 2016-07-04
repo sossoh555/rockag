@@ -28,7 +28,7 @@ COSTbool = true;
 DEBUG = true;
 
 
-Udes = 9;
+Udes = 6;
 Isp = 350;
 g0 = 9.81/1000;
 
@@ -47,7 +47,8 @@ type = 'bitString'; % doubleVector
 
 P1 = 0.5;P2 = 0.4;P3 = 0.1; %padrao
 W1 = 1; W2 = 1; W3 = 1; %padrao
-nW = 5; %padrao
+nW = 20; %padrao
+
 if ALLbool
     W1 = 1; W2 = 1; W3 =1;
     W = [W1 W2 W3] ;
@@ -61,13 +62,20 @@ else
     
     if MVECbool,
         W2 = 1;
+        W3 = 0;
     else
-        W2 = 0;    
+        W2 = 0;
+        W3 = 0;
     end
     if COSTbool && ~MVECbool,
         W3 = 1;
         W2 = 0;
         MVECbool = true;
+    elseif ~COSTbool && ~MVECbool,
+        W3 = 0;
+        W2 = 0;
+    elseif ~COSTbool &&MVECbool,
+        W3 = 0;
     else
         W3 = 1;    
     end

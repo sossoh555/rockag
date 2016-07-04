@@ -87,17 +87,18 @@ switch flag
                 set(plotOld, 'Xdata',newX, 'Ydata', newY);
                 chH = get(gca,'Children');
                 
+                Utex = sprintf('U_{desejado} = %.2f km/s',Udes);
                 if strcmp(chH(end).Marker,'x'),
                     
                     set(gca,'Children',[chH(end-2);chH(end-1);chH(end);chH(1:end-3)])
                     legend(...
                         'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
-                        'Udesejado','Melhores indivíduos anteriores','Melhor indivíduo atual');
+                        Utex,'Melhores indivíduos anteriores','Melhor indivíduo atual');
                 elseif strcmp(chH(end-1).Marker,'x'),
                     set(gca,'Children',[chH(end-1);chH(end-2);chH(end);chH(1:end-3)])
                     legend(...
                         'e = 0.001','e = 0.01','e = 0.05','e = 0.1','e = 0.2','e = 0.5',...
-                        'Udesejado','Melhores indivíduos anteriores','Melhor indivíduo atual')
+                        Utex,'Melhores indivíduos anteriores','Melhor indivíduo atual')
                 end
                 %                 if strcmp(chH(9).Marker,'x'),
 %                     chH = get(gca,'Children');

@@ -59,6 +59,9 @@ switch flag
             [~,i] = min(state.Score);
             plotN(state.Population(i,:),flag);
         end
+        
+ 
+
         %fprintf(fid,t);
         Fit(:) = 0;
         
