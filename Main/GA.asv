@@ -20,12 +20,12 @@ test = struct('Nmin',1,'Nmax',6,...
 ALLbool = false;
 DELVbool = true; %considerar fit delta V
 MVECbool = true; %considerar fit Massa do veiculo (Mvec)
-COSTbool = true; %considerar fit de Custos
+COSTbool = ; %considerar fit de Custos
 
 DEBUG = true;
 
 Udes = 9.4; % Delta V [km/s];
-Isp = 311; %Impulso especifico [s]
+Isp = 282; %Impulso especifico [s]
 g0 = 9.81/1000; %gravidade [km/s^2];
 
 Fit(3,1) = 0;
@@ -44,7 +44,7 @@ type = 'bitString'; % doubleVector
 P1 = 0.8;P2 = 0.1;P3 = 0.1; %padrao
 
 W1 = 1; W2 = 1; W3 = 1; %padrao
-nW = 1; %padraoplotBest,plotUdes,plotOld
+nW = 20; %padrao
 
 if ALLbool
     W1 = 1; W2 = 1; W3 =1;

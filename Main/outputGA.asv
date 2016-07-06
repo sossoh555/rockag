@@ -36,6 +36,10 @@ function [state, options,optchanged] = outputGA(options,state,flag)
 global POP fTEST
 global Fit P W  scalingGain fGain
 
+
+
+%nameFile =  strcat(POP,finalName,'.txt');
+%fid = fopen(strcat(fullfile(PATH, nameFile)), 'at' );
 if scalingGain,
     fid = fopen(fGain, 'at' );
 else
@@ -48,14 +52,19 @@ pop = state.Population;
 scores = state.Score;
 best = state.Best;
 
+
 switch flag
     case 'init'
         if ~scalingGain,
             [~,i] = min(state.Score);
             plotN(state.Population(i,:),flag);
         end
-        Fit(:) = 0;
         
+ 
+
+        %fprintf(fid,t);
+        Fit(:) = 0;
+
         pop = options.PopulationSize;
         typeGA = options.PopulationType;
         gen = options.Generations;
@@ -76,17 +85,17 @@ switch flag
         for i =1:size(fncs,2),
             plotFcns =  [plotFcns  sprintf(' %s ',func2str(fncs{i}))];
         end
+        
+        
         names = {'Type' 'Population Size' 'Mutation' 'Creation' ...
             'Fitness Scaling' 'Selection' 'Crossover' 'PlotFunctions'...
-            'TolFun' 'TolCon' 'Crossover Fraction' 'Elite Count'...
-            'Migration Direction' 'Migration Interval'...
-            'Migration Fraction'};
+            'TolFun' 'TolCon' 'Crossover Fraction' 'Elite Count' 'Migration Direction' 'Migration Interval' 'Migration Fraction'};
         maxChars = 0;
         for i=1:size(names,2)
             ref = length(names{i});
             if maxChars < ref, maxChars = ref;   end
         end
-        
+
         fprintf(fid,'Type: %s\n', typeGA);
         fprintf(fid,'Population Size: %d\n',pop);
         fprintf(fid,'Generations: %d\n',gen);
@@ -103,16 +112,18 @@ switch flag
         fprintf(fid,'Migration Direction: %s\n',migDir);
         fprintf(fid,'Migration Interval: %d\n',migInt);
         fprintf(fid,'Migration Fraction: %.3f\n\n\n',migFrac);
-        
+     
         clearvars -global Fit;
         Fit(3,1) = 0;
         
     case {'iter','interrupt'}
         
+   
+        
         widp = 3;
         fprintf(fid,'Iterating ...');
         fprintf(fid,'<------> Generation %03d <------>\n',state.Generation);
-        
+      
         div = zeros(1,size(pop,2));
         
         for i =1:size(pop,1),
@@ -124,9 +135,11 @@ switch flag
                 end
             end
             
+            
             fprintf(fid,'| %f',scores(i,1));
-            if scores(i,1) == best(end),
+            if scores(i,1) == best(end),  
                 fprintf(fid,' [BEST] |');
+             
             end
             fprintf(fid,'\n');
         end
@@ -149,6 +162,15 @@ switch flag
             fprintf(fid,'\n');
             
         end
+      
+        
+  
+      %  fid = fopen(POP, 'at' );
+      %  fprintf(fid,'\n');
+      %  fprintf(fid,'\n');
+        
+        % Arrumaaaaaaaaaaaaar pesos
+        %
         
         if scalingGain,
             fid = fopen(fGain, 'at' );
@@ -158,7 +180,7 @@ switch flag
         FitAvg = zeros(1,3);
         
         if state.Generation == 1 && scalingGain,
-            
+
             FitAvg(1) = sum(Fit(1,1:end))/options.PopulationSize;
             FitAvg(2) = sum(Fit(2,1:end))/options.PopulationSize;
             FitAvg(3) = sum(Fit(3,1:end))/options.PopulationSize;
@@ -180,6 +202,7 @@ switch flag
                 fprintf(fid, 'W%d_final: %f\n',i,W(i));
                 count = count + 1;
                 aux = 0;
+                
             end
             
             fprintf(fid, 'Geracao: %d\n',state.Generation);
@@ -196,6 +219,7 @@ switch flag
                 fprintf(fid, 'Min: %.3E\n',min(Fit(i,2:end)));
                 fprintf(fid, 'Max: %.3E\n',max(Fit(i,2:end)));
             end
+            
         end
         
         clearvars -global Fit;
