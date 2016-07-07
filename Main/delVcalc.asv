@@ -22,8 +22,8 @@ if size(lambda,2) == 1,
     end
     end
 
-    resus = sum(v);
-
+    delV = sum(v);
+    delVFit = abs(W(1)*(Udes - delV)/Udes);
     
 %     pPL = (lambda/(1+lambda));
 %     num = (pPL^(1/N))*(1-e) + e;

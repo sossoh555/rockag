@@ -35,8 +35,9 @@ for n = 1:Nmax,
     end
 end
 v
-sum(v)
-
+disp(sum(v))
+disp(mE)
+disp(mp)
 % m01 = Mvec - mp(1);
 % v2(1) = Isp*g*log(Mvec/m01);
 % 

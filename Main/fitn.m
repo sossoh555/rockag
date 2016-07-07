@@ -32,10 +32,10 @@ end
 %          delV
 %=======================
 
-%if DELVbool || ALLbool,
+if DELVbool || ALLbool,
     [pPL, delV] = delVcalc(lambda,e,N);
     delVFit = abs(W(1)*(Udes - delV)/Udes);
-%end
+end
 
 %=======================
 %         Mvec
@@ -52,6 +52,7 @@ end
 
     MvecFit = Mvec*W(2);
     
+    
 %end
 %=======================
 %        Cost
@@ -61,7 +62,7 @@ end
     rem = mod(N,Nr);
     LOX = 0.08;
     RP = 0.20;
-    
+    costE = [0.6 0.2 0.1 0.05 0.025 0.025];
     RPLOX = 0.430585683;
     
     Nr = round(N);
@@ -98,8 +99,12 @@ end
     %Cost = Cost + (1 + A*exp(-mi/400000))*rem;
      Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
     Cost = Cost + 299 + 14.2*log(sum(mE));
+    for j = 1:Nr,
+    
+    end
      CostFit = Cost*W(3);
 %end
+
 
 %=======================
 %        FITNESS

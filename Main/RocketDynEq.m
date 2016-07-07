@@ -7,7 +7,7 @@ h  =  y(4);     % Altitude
 vD =  y(5);     % Velocity loss due to drag
 vG =  y(6);     % Velocity loss due to gravity
 % Equations of motion of a gravity turn trajectory
-      m = m0 - md*t  % Vehicle mass
+      m = m0 - md*t;  % Vehicle mass
 % else
 %     m = mf;          % Burnout mass
 %     T = 0;           % No more thrust is generated
