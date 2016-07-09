@@ -4,7 +4,7 @@ global hMarks Udes
 
 fprintf('flag: %s\n',flag)
 e = [0.001 0.01 0.05 0.1 0.2 0.5];
-l = 0.0001:0.0001:1;
+l = 0.00001:0.0001:1;
 switch flag
     case 'init'
         

@@ -29,9 +29,10 @@ Isp = 310; %Impulso especifico [s]
 g0 = 9.81/1000; %gravidade [km/s^2];
 
 Fit(3,1) = 0;
-Mpay = 2000; % Payload [kg]
+StallLimit = 30; % Geracoes sem modificacao
+Mpay = 1700; % Payload [kg]
 Npop = 100; % Tamanho da populacao
-Ngen = 100; % Numero de geracoes
+Ngen = 150; % Numero de geracoes
 Neli = 1; % Numero de elitismo
 mutationRate = 0.05; % 5 Percent
 
@@ -41,10 +42,10 @@ type = 'bitString'; % doubleVector
 %1 - dV; 2 - m; 3 - cost
 %W1 = 1/Udes;W2 = 1/3000000;W3 = 0;
 
-P1 = 0.5;P2 = 0.4;P3 = 0.1; %padrao
+P1 = 0.8;P2 = 0.1;P3 = 0.1; %padrao
 
 W1 = 1; W2 = 1; W3 = 1; %padrao
-nW = 10; %padraoplotBest,plotUdes,plotOld
+nW = 15; %padraoplotBest,plotUdes,plotOld
 
 if ALLbool
     W1 = 1; W2 = 1; W3 =1;
@@ -232,7 +233,7 @@ opts = gaoptimset(...
     'MutationFcn',{@mutationuniform, 0.05}, ...
     'SelectionFcn', @selectionroulette,...
     'TolFun', 1e-8, ...
-    'StallGenLimit', 50, ...
+    'StallGenLimit', StallLimit, ...
     'FitnessScalingFcn',{@fitscalingtop,0.9},...
     'OutputFcn',@outputGA);
 
