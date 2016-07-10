@@ -43,11 +43,13 @@ end
 %if MVECbool || ALLbool,
 
     Nmax = round(N);
-    for i =0:1:Nmax - 1
-        pPL = (lambda/(1+lambda))^Nmax;
-        mE(i+1) = (1 - pPL^(1/Nmax))*e*Mpay/(pPL^((Nmax - i)/Nmax));
-        mp(i+1) = (1 - pPL^(1/Nmax))*(1-e)*Mpay/(pPL^((Nmax - i)/Nmax));
+       for i =0:1:Nmax+1
+        pPL = (lambda/(1+lambda))^N;
+        mE(i+1) = (1 - pPL^(1/N))*e*Mpay/(pPL^((N - i)/N));
+        mp(i+1) = (1 - pPL^(1/N))*(1-e)*Mpay/(pPL^((N - i)/N));
     end
+    
+    
     Mvec = sum(mE)+sum(mp) + Mpay;
 
     MvecFit = Mvec*W(2);
@@ -83,7 +85,7 @@ end
 %         E = e/(e + 1);
 %         L = lambda;
 %         E = e;
-        mi = mE(Nr);
+%        mi = mE(Nr);
         %Cost = Cost + 1 + A*exp(-mi/400000);
          
         Cost = Cost + mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX;
@@ -95,7 +97,7 @@ end
 %     E = e/(e + 1);
 %     L = lambda;
 %     E = e;
-    mi = mE(Nr)*rem;
+%    mi = mE(Nr)*rem;
     %Cost = Cost + (1 + A*exp(-mi/400000))*rem;
      Cost = Cost + (mp(Nr)*RPLOX*RP + mp(Nr)*(1-RPLOX)*LOX)*rem;
     Cost = Cost + 299 + 14.2*log(sum(mE));
