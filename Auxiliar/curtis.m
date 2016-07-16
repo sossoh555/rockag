@@ -52,3 +52,30 @@ disp(mp)
 % sum(v2)
 
 %vfinal = Isp*g*log(Mvec/m03)
+
+
+
+
+
+
+
+%     Nmax = round(N);
+%     for i =0:1:Nmax - 1
+%         pPL = (lambda/(1+lambda))^Nmax;
+%         mE(i+1) = (1 - pPL^(1/Nmax))*e*Mpay/(pPL^((Nmax - i)/Nmax));
+%         mp(i+1) = (1 - pPL^(1/Nmax))*(1-e)*Mpay/(pPL^((Nmax - i)/Nmax));
+%     end
+%     Mvec = sum(mE)+sum(mp) + Mpay;
+%     
+%     for n = 1:Nmax,
+%     if n == 1,
+%         m(n) = Mvec - mp(n);
+%         v(n) = Isp*g0*log(Mvec/m(n));
+%     else
+%         m(n-1) = m(n-1) - mE(n-1);
+%         m(n) = m(n-1) - mp(n);
+%         v(n) = Isp*g0*log(m(n-1)/m(n));
+%     end
+%     end
+% 
+%     resus = sum(v);

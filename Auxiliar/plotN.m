@@ -77,12 +77,9 @@ switch flag
                 newX = [get(plotOld,'Xdata') get(plotBest,'Xdata')];
                 newY = [get(plotOld, 'Ydata') get(plotBest,'Ydata')];
                 set(plotOld, 'Xdata',newX, 'Ydata', newY);
-                
-                
+
                 Utex = sprintf('U_{desejado} = %.2f km/s',Udes);
-                
-                
-                
+
                 plotBest = findobj(get(gca,'Children'),'Marker','x');
                 plotOld = findobj(get(gca,'Children'),'Marker','o');
                 plotUdes = findobj(get(gca,'Children'),'Tag','Udes');
@@ -124,53 +121,14 @@ switch flag
                     Utex,'Melhores individuos anteriores',...
                     'Melhor individuo atual')
             end
-%                 chH = get(gca,'Children');
-%                 for p = 1:size(chH,1),
-%                     if strcmp(chH(p).Marker, 'x'),
-%                         msgbox(sprintf('%d',p))
-%                         if p == 8,
-%                             set(gca,'Children',...
-%                         [chH(end);chH(end-1);chH(end-2);chH(1:end-3)])
-%                         elseif p == 7,
-%                             set(gca,'Children',...
-%                         [chH(end-1);chH(end-2);chH(end);chH(1:end-3)])
-%                         else
-%                               set(gca,'Children',...
-%                         [chH(1:end)])
-%                         end
-% %                         if p == 7,
-%                             
-% %                         elseif p == 8,
-% %                             set(gca,'Children',...
-% %                         [chH(end-2);chH(end-1);chH(end);chH(1:end-3)])
-% %                         end
-%                         
-%                         
-% %                         set(gca,'Children',...
-% %                         [chH(1:p-1);chH(p+1:end)])
-%                     end
-%                     
-%                 end
-                
-%                % if strcmp(chH(end).Marker,'x'),
-%                     set(gca,'Children',...
-%                         [chH(end-2);chH(end-1);chH(end);chH(1:end-3)])
-%                     
-%                 elseif strcmp(chH(end-1).Marker,'x'),
-%                     set(gca,'Children',...
-%                         [chH(end-1);chH(end-2);chH(end);chH(1:end-3)])
-%                 end
-                
-       
             plotBest = findobj(get(gca,'Children'),'Marker','x');
             newX = [lBest];
             newY = [U];
             set(plotBest, 'Xdata',newX, 'Ydata', newY);
             
         end
-        
-        drawnow
-        
+
+        drawnow    
     case 'done'
         
 end

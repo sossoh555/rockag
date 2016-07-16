@@ -31,10 +31,11 @@ end
 %=======================
 %          delV
 %=======================
-
 if DELVbool || ALLbool,
     [pPL, delV] = delVcalc(lambda,e,N);
-    delVFit = abs(W(1)*(Udes - delV)/Udes);
+    delVFit = abs(W(1)*(Udes - delV)/Udes);  
+else 
+    [pPL, delV] = delVcalc(lambda,e,N); 
 end
 
 %=======================
@@ -49,12 +50,9 @@ end
         mp(i+1) = (1 - pPL^(1/N))*(1-e)*Mpay/(pPL^((N - i)/N));
     end
     
-    
     Mvec = sum(mE)+sum(mp) + Mpay;
-
     MvecFit = Mvec*W(2);
-    
-    
+
 %end
 %=======================
 %        Cost
@@ -106,8 +104,6 @@ end
     end
      CostFit = Cost*W(3);
 %end
-
-
 %=======================
 %        FITNESS
 %=======================
@@ -132,7 +128,6 @@ fitness = delVFit + MvecFit + CostFit;
 FITNESS = 100 + log10(fitness);
 %if FITNESS > 1, FITNESS = 1; end
 
-
 Penalty = 0;
 fPenal = Penalty*pPL/0.05;
 FITNESS = FITNESS + fPenal;
@@ -156,7 +151,7 @@ if DEBUG,
     %mE = Mvec - mp - Mpay;
     
     ch1 = {'FIT','Penal','dVFit','MvecFit','CFit','dVF [%]','MvF [%]',...
-        'CF [%]','N','lambda','e','delV [kg/s]','Mvec [kg]','Cost [U$]'};
+        'CF [%]','N','lambda','e','delV [km/s]','Mvec [kg]','Cost [U$]'};
     ch2 = {'pPL [%]','Mpay [kg]','mf [kg]','mp [kg]','mE [kg]'};
 
     colheadings = [ch1 ch2];

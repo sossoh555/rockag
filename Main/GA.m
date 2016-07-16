@@ -14,7 +14,7 @@ PATH = 'C:\Users\Bruno\Google Drive\TG\Codigo\Main\Data\';
 
 test = struct('Nmin',1,'Nmax',6,...
     'Lmin',0.001, 'Lmax',0.9, ...
-    'Emin',0.05,'Emax',1);
+    'Emin',0.01,'Emax',1);
 % fitness
 
 ALLbool = false;
@@ -25,12 +25,12 @@ COSTbool = true; %considerar fit de Custos
 DEBUG = true;
 
 Udes = 7.8; % Delta V [km/s];
-Isp = 310; %Impulso especifico [s]
+Isp = 254; %Impulso especifico [s]
 g0 = 9.81/1000; %gravidade [km/s^2];
 
 Fit(3,1) = 0;
-StallLimit = 30; % Geracoes sem modificacao
-Mpay = 1700; % Payload [kg]
+StallLimit = 50; % Geracoes sem modificacao
+Mpay = 795; % Payload [kg]
 Npop = 100; % Tamanho da populacao
 Ngen = 150; % Numero de geracoes
 Neli = 1; % Numero de elitismo

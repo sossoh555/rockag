@@ -205,7 +205,7 @@ switch flag
             [~,i] = min(state.Score);
             plotN(state.Population(i,:),flag);
         end
-        fprintf(fid,'Performing final task');
+        fprintf(fid,'\nPerforming final task\n');
 end
 fclose('all');
 end
