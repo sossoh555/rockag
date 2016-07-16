@@ -27,7 +27,7 @@ DEBUG = true;
 Udes = 7.8; % Delta V [km/s];
 Isp = 254; %Impulso especifico [s]
 g0 = 9.81/1000; %gravidade [km/s^2];
-%teste
+%testes
 Fit(3,1) = 0;
 StallLimit = 50; % Geracoes sem modificacao
 Mpay = 795; % Payload [kg]
